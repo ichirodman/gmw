@@ -1,3 +1,7 @@
-from algos.rle import rle
+from algos.rle import rle, inverse_rle
 
-print(rle('ABCABCABCDDDFFFFFF'))  # 9ABCABCABC3D6F
+string = 'ABCABCABCDDDFFFFFF'
+encoded = rle(string)
+decoded = inverse_rle(encoded)
+print('Input :   {}\nRLE :     {}\nInverse : {}\nMatched : {}'.format(
+    string, encoded, decoded, string == decoded))
