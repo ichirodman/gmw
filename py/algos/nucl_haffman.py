@@ -1,4 +1,4 @@
-def nucleotide_hoffman(rle_encoded_string: str):
+def nucleotide_haffman(rle_encoded_string: str):
     rle_encoded_string = rle_encoded_string.upper()
     i = 0
     encoded = ''
@@ -19,7 +19,7 @@ def nucleotide_hoffman(rle_encoded_string: str):
     return int('1' + encoded, 2)
 
 
-def inverse_nucleotide_hoffman(code: int):
+def inverse_nucleotide_haffman(code: int):
     decoding = {'00': 'A', '01': 'C', '10': 'G', '11': 'T'}
     code = bin(code)[3:]
     decoded = ''

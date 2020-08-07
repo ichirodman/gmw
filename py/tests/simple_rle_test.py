@@ -1,4 +1,4 @@
-from algos.rle import rle, inverse_rle
+from py.algos.rle import rle, inverse_rle
 
 string = 'ABCABCABCDDDFFFFFF'
 encoded = rle(string)

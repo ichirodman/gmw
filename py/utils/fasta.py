@@ -1,6 +1,6 @@
 def extract_fasta(absolute_filepath: str):
     _content, _i = list(), -2
-    for _line in open('../{}'.format(absolute_filepath)).readlines():
+    for _line in open('../../data/{}'.format(absolute_filepath)).readlines():
         if '>' in _line:
             _i += 1
             _content.append(dict())
