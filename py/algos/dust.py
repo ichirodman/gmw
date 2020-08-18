@@ -1,10 +1,10 @@
-def dust(seq: str, min_len: int = 7, min_score=2.5, threshold_score_difference=0.7, n_chars=False) -> str:
+def dust(seq: str, min_len: int = 7, min_score=2.5, threshold_score_difference=0.7, n_chars=False, print_progress=False):
     _to_cut = list()
     _l = min_len - 2
     _amount = [0] * (4 ** 3)
     _i = 0
     while _i + 3 < len(seq):
-        print('done : {:.2f}%'.format(100 * float(_i) / len(seq)))
+        print_progress and print('done : {:.2f}%'.format(100 * float(_i) / len(seq)))
         _amount[_get_slice_index(seq[_i:_i + 3])] += 1
         if _i > _l:
             _amount[_get_slice_index(seq[_i - _l:_i - _l + 3])] -= 1
@@ -29,7 +29,7 @@ def dust(seq: str, min_len: int = 7, min_score=2.5, threshold_score_difference=0
                 _i = _to_cut[-1][1]
                 _amount = [0] * (4 ** 3)
         _i += 1
-    print(_to_cut)
+    print_progress and print(_to_cut)
     for segment in _to_cut:
         seq = seq[:segment[0]] + (
             seq[segment[0]:segment[1]].lower() if not n_chars else 'N' * (segment[1] - segment[0])) + seq[segment[1]:]
