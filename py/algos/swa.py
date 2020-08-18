@@ -3,7 +3,6 @@ _DELTA = 2
 
 
 def swa(v: str, w: str):
-    max_len = max(len(v), len(w))
     matrix = [[0] * (len(w) + 1) for _ in range(len(v) + 1)]
     max_val_coords = [0, 0]
     for j in range(1, len(matrix[0])):
@@ -41,6 +40,7 @@ def swa(v: str, w: str):
         else:
             r1 = ('-' if stack[ind + 1][0] == stack[ind][0] else v[i - 1]) + r1
             r2 = ('-' if stack[ind + 1][1] == stack[ind][1] else w[j - 1]) + r2
+    max_len = max(len(r1), len(r2))
     r1 += '-' * (max_len - len(r1))
     r2 += '-' * (max_len - len(r2))
     links = ''
