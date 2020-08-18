@@ -3,7 +3,7 @@ from py.utils.fasta import extract_fasta
 
 # seq = extract_fasta('CP003305.1.fasta')[0]['data']
 seq = 'AAAACATATTTTTTTGTTTTTTTTTAGTGGGAATTTTGTAAAAAAAATTCATTCAAACCCCCCCCCCCTCCCCCTCGGTTATGTTATTAT'
-dusted, cut = dust(seq, n_chars=True)
+dusted, cut = dust(seq, n_chars=False, print_progress=True)
 
 print('\t'.join(dusted))
 print('\t'.join(seq))
