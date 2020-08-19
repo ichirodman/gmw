@@ -4,12 +4,20 @@
 #include <fstream>
 #include <iostream>
 
+struct FastaSequence
+{
+    FastaSequence(std::string &description, std::string &source) : description(description), source(source){};
+
+    std::string &description;
+    std::string &source;
+};
+
 struct FastaFileContent
 {
     FastaFileContent(std::string &filename) : filename(filename)
     {
         std::string line;
-        std::ifstream in("../../data/" + filename);
+        std::ifstream in("../data/" + filename);
         std::string *last_read_seq, *last_read_descriprion;
         if (in.is_open())
         {
@@ -33,14 +41,6 @@ struct FastaFileContent
             std::cerr << "File not found";
         }
         in.close();
-    };
-
-    struct FastaSequence
-    {
-        FastaSequence(std::string &description, std::string &source) : description(description), source(source){};
-
-        std::string &description;
-        std::string &source;
     };
 
     std::vector<FastaSequence const *> sequences;
