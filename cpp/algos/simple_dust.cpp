@@ -1,4 +1,5 @@
 #include "simple_dust.hpp"
+#include <functional>
 
 using namespace std;
 
@@ -8,6 +9,14 @@ void print_arr(int *arr, int len)
     for (int i = 0; i < len; i++)
         cout << arr[i] << " ";
     cout << endl;
+};
+
+int sum_elements(int *arr, int len)
+{
+    int sum = 0;
+    for (int i = 0; i < len; i++)
+        sum += arr[i];
+    return sum;
 };
 
 int get_nucleotide_index(char nucliotide)
@@ -39,22 +48,33 @@ int get_slice_index(string slice)
     return code;
 };
 
-float count_subseq_score(int *occurrence_array, int array_length, int *additive_array = nullptr)
-{
-    float sum_score = 0.0;
-    int slices_amount = 0;
-    for (int i = 0; i < array_length; i++)
-    {
-        int occurrence_i_value = occurrence_array[i] + (additive_array == nullptr ? 0 : additive_array[i]);
-        slices_amount += occurrence_i_value;
-        sum_score += static_cast<float>(occurrence_i_value * (occurrence_i_value + 1)) / 2.0;
-    }
-    return static_cast<float>(sum_score) / (static_cast<float>(slices_amount) - 1.0);
-}
-
 void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
           float threshold_score_difference, bool print_progress, bool debug)
 {
+    function<float(int *, int, int *)> count_subseq_score = [](int *occurrence_array, int array_length, int *additive_array = nullptr) {
+        float sum_score = 0.0;
+        int slices_amount = 0;
+        for (int i = 0; i < array_length; i++)
+        {
+            int occurrence_i_value = occurrence_array[i] + (additive_array == nullptr ? 0 : additive_array[i]);
+            slices_amount += occurrence_i_value;
+            sum_score += static_cast<float>(occurrence_i_value * (occurrence_i_value + 1)) / 2.0;
+        }
+        return static_cast<float>(sum_score) / (static_cast<float>(slices_amount) - 1.0);
+    };
+
+    function<void(int *, int, int)> increment_slice_occurrence = [seq](int *occurrence_array, int index, int slice_len) {
+        const string new_slice = seq->source.substr(index, slice_len);
+        const int new_slice_index = get_slice_index(new_slice);
+        occurrence_array[new_slice_index]++;
+    };
+
+    function<void(int *, int, int)> decrement_slice_occurrence = [seq](int *occurrence_array, int index, int slice_len) {
+        const string new_slice = seq->source.substr(index, slice_len);
+        const int new_slice_index = get_slice_index(new_slice);
+        occurrence_array[new_slice_index]--;
+    };
+
     const int slice_len = 3, slices_amount = min_len - 2, slice_indexes_amount = static_cast<int>(pow(4, slice_len));
 
     int amount_array[slice_indexes_amount];
@@ -66,19 +86,13 @@ void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
     {
         if (print_progress && static_cast<int>(round((i + 1) * 100.0 / (seq_len - slice_len))) > done)
         {
-            done = (int)(round((i + 1) * 100.0 / (seq_len - slice_len)));
+            done = static_cast<int>(round((i + 1) * 100.0 / (seq_len - slice_len)));
             cout << "Dust done : " << done << "%" << endl;
         }
 
-        const string new_slice = seq->source.substr(i, slice_len);
-        const int new_slice_index = get_slice_index(new_slice);
-        amount_array[new_slice_index]++;
+        increment_slice_occurrence(amount_array, i, slice_len);
 
-        int slices_now_in_amount = 0;
-        for (int j = 0; j < slice_indexes_amount; j++)
-        {
-            slices_now_in_amount += amount_array[j];
-        }
+        int slices_now_in_amount = sum_elements(amount_array, slice_indexes_amount);
 
         if (debug)
         {
@@ -87,11 +101,9 @@ void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
 
         if (slices_now_in_amount > slices_amount)
         {
-            const string old_slice = seq->source.substr(i - slices_amount, slice_len);
-            const int old_slice_index = get_slice_index(old_slice);
-            amount_array[old_slice_index]--;
+            decrement_slice_occurrence(amount_array, i - slices_amount, slice_len);
 
-            const float subseq_score = count_subseq_score(amount_array, slice_indexes_amount);
+            const float subseq_score = count_subseq_score(amount_array, slice_indexes_amount, nullptr);
             if (subseq_score > score_increase_threshold + 1e-2)
             {
                 int good_additive_i = 0;
@@ -102,9 +114,7 @@ void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
                 vector<int> *new_score = new vector<int>();
                 for (int additive_i = 1;; additive_i++)
                 {
-                    const string slice_out_of_bounds = seq->source.substr(i + additive_i - 1, slice_len);
-                    const int slice_out_of_bounds_index = get_slice_index(slice_out_of_bounds);
-                    additive_amount_array[slice_out_of_bounds_index]++;
+                    increment_slice_occurrence(additive_amount_array, i + additive_i - 1, slice_len);
 
                     int additive_subseq_score = count_subseq_score(amount_array, slice_indexes_amount, additive_amount_array);
                     new_score->push_back(additive_subseq_score);

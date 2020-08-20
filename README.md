@@ -1,6 +1,6 @@
 # GMW or Genetic Magic Wands
 
-This repo's purpose is to store samples of solutions to genetic tasks which were given to us from BIOCAD while the science summer practice.
+>This repo's purpose is to store samples of solutions to genetic tasks which were given to us from BIOCAD while the science summer practice.
 
 
 ### Probably useful:
