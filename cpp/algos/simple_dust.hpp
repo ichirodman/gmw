@@ -122,38 +122,44 @@ void dust(FastaSequence const *seq, int min_len = 7, float score_increase_thresh
                 vector<int> *new_score = new vector<int>();
                 for (int additive_i = 1;; additive_i++)
                 {
-                    const string slice_out_of_bounds = seq->source.substr(i + additive_i, slice_len);
+                    const string slice_out_of_bounds = seq->source.substr(i + additive_i - 1, slice_len);
                     const int slice_out_of_bounds_index = get_slice_index(slice_out_of_bounds);
                     additive_amount_array[slice_out_of_bounds_index]++;
-                    new_score->push_back(count_subseq_score(amount_array, slice_indexes_amount, additive_amount_array));
-                    if (new_score->size() > 3)
+
+                    int additive_subseq_score = count_subseq_score(amount_array, slice_indexes_amount, additive_amount_array);
+                    new_score->push_back(additive_subseq_score);
+
+                    if (new_score->back() - score_to_compare_with < threshold_score_difference)
                     {
-                        if (new_score->back() - score_to_compare_with < threshold_score_difference)
+                        if (debug)
                         {
-                            if (debug)
-                            {
-                                print_arr(amount_array);
-                                print_arr(additive_amount_array);
-                                cout << "Score for it : " << subseq_score << endl
-                                     << endl;
-                            }
-                            if (new_score->size() > 3)
-                            {
-                                break;
-                            }
+                            print_arr(amount_array);
+                            print_arr(additive_amount_array);
+                            cout << "Score for it : " << subseq_score << endl
+                                 << endl;
                         }
-                        else
+                        if (new_score->size() > 4)
                         {
-                            good_additive_i = additive_i;
+                            break;
                         }
+                    }
+                    else
+                    {
                         score_to_compare_with = new_score->back();
+                        good_additive_i = additive_i;
                     }
                 }
 
                 delete new_score;
-                
+
                 pair<int, int> low_complexity_region(i - slices_amount + 1 + 1, i + slice_len + good_additive_i - 1);
                 filtered_out->push_back(low_complexity_region);
+
+                if (true)
+                {
+                    cout << low_complexity_region.first << "->" << low_complexity_region.second << " : " << seq->source.substr(low_complexity_region.first - 5, 5) << "|"
+                         << seq->source.substr(low_complexity_region.first, low_complexity_region.second - low_complexity_region.first) << "|" << seq->source.substr(low_complexity_region.second + 5, 5) << endl;
+                }
 
                 i = filtered_out->back().second;
                 ::memset(amount_array, 0, sizeof(int) * slice_indexes_amount);
@@ -161,18 +167,18 @@ void dust(FastaSequence const *seq, int min_len = 7, float score_increase_thresh
         }
     }
 
+    int summary = 0;
+
     for (pair<int, int> p : *filtered_out)
     {
         for (int i = p.first; i < p.second; i++)
         {
             seq->source[i] = tolower(seq->source[i]);
         }
-        if (debug)
-        {
-            cout << p.first << "->" << p.second << " : " << seq->source.substr(p.first - 5, 5) << "|"
-                 << seq->source.substr(p.first, p.second - p.first) << "|" << seq->source.substr(p.second + 5, 5) << endl;
-        }
+        summary += p.second - p.first;
     }
+
+    cout << summary;
 
     delete filtered_out;
 };
