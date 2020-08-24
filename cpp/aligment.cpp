@@ -2,6 +2,7 @@
 #include <iostream>
 #include "utils/fasta.hpp"
 #include "algos/simple_dust.hpp"
+#include "sdust/sdust.h"
 
 using namespace std;
 
