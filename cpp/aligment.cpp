@@ -25,9 +25,9 @@ void delete_occurrence_array(T *);
 template <typename T>
 short int get_next_query_triplet_code(int, T *);
 
-bool is_triplet_in_current_code_triplets(short int, vector<short int> *);
+bool is_triplet_in_current_code_triplets(int, vector<int> *);
 
-int get_index(vector<short int> *, int);
+int get_index(vector<int> *, int);
 
 short int get_nucleotide_code(char);
 
@@ -53,10 +53,10 @@ int main()
 auto *init_occurrence_array()
 {
     const size_t occurrence_array_size = pow(VOCABULARY_SIZE, TRIPLET_LEN);
-    auto *occurrence_array = new array<vector<short int> *, occurrence_array_size>();
+    auto *occurrence_array = new array<vector<int> *, occurrence_array_size>();
     for (int i = 0; i < occurrence_array->size(); ++i)
     {
-        occurrence_array->at(i) = new vector<short int>();
+        occurrence_array->at(i) = new vector<int>();
     }
     return occurrence_array;
 }
@@ -73,9 +73,9 @@ void delete_occurrence_array(T *occurrence_array)
 }
 
 template <typename T>
-short int get_triplet_code(int triplet_index, T *occurrence_array)
+int get_triplet_code(int triplet_index, T *occurrence_array)
 {
-    for (short int triplet_code = 0; triplet_code < occurrence_array->size(); ++triplet_code)
+    for (int triplet_code = 0; triplet_code < occurrence_array->size(); ++triplet_code)
     {
         if (is_triplet_in_current_code_triplets(triplet_index, occurrence_array->at(triplet_code)))
         {
@@ -85,12 +85,12 @@ short int get_triplet_code(int triplet_index, T *occurrence_array)
     return -1;
 }
 
-bool is_triplet_in_current_code_triplets(short int triplet_code, vector<short int> *current_code_triplets)
+bool is_triplet_in_current_code_triplets(int triplet_code, vector<int> *current_code_triplets)
 {
     return get_index(current_code_triplets, triplet_code) != -1;
 }
 
-int get_index(vector<short int> *arr, int val)
+int get_index(vector<int> *arr, int val)
 {
     for (int left = 0, right = arr->size() - 1, mid = (left + right) / 2;
          left <= right; mid = (left + right) / 2)
@@ -133,9 +133,10 @@ int get_additive_end_of_match_segment(T *query_occurrence_array, T *target_occur
         // cout << "i : " << query_start_index + additive_i << " " << target_start_index + additive_i << " " << query_triplet_code << " " << target_triplet_code << endl;
 
         if (query_triplet_code != target_triplet_code || query_triplet_code == -1 || target_triplet_code == -1)
-            break;
+        {
+            return additive_i;
+        }
     }
-    return additive_i;
 }
 
 short int get_nucleotide_code(char nucleotide)
@@ -188,7 +189,9 @@ auto *get_occurrence_array(const FastaSequence *sequence)
 msegs *get_matched_segments(const FastaSequence *query, const FastaSequence *target)
 {
     auto *query_triplet_occurrence = get_occurrence_array(query);
+    cout << "Query triplet occurrence array got" << endl;
     auto *target_triplet_occurrence = get_occurrence_array(target);
+    cout << "Target triplet occurrence array got" << endl;
 
     msegs *matched_segments = new msegs();
 
@@ -196,6 +199,7 @@ msegs *get_matched_segments(const FastaSequence *query, const FastaSequence *tar
          triplets_code < query_triplet_occurrence->size() && triplets_code < target_triplet_occurrence->size();
          ++triplets_code)
     {
+        cout << "Now checking code : " << triplets_code << endl;
         for (int query_i = 0; query_i < query_triplet_occurrence->at(triplets_code)->size(); ++query_i)
         {
             for (int target_i = 0; target_i < target_triplet_occurrence->at(triplets_code)->size(); ++target_i)
