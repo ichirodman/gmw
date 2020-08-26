@@ -5,10 +5,10 @@
 
 struct FastaSequence
 {
-    FastaSequence(std::string &description, std::string &source) : description(description), source(source){};
+    FastaSequence(std::string *description, std::string *source) : description(description), source(source){};
 
-    std::string &description;
-    std::string &source;
+    std::string *description;
+    std::string *source;
 };
 
 struct FastaFileContent

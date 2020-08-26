@@ -64,13 +64,13 @@ void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
     };
 
     function<void(int *, int, int)> increment_slice_occurrence = [seq](int *occurrence_array, int index, int slice_len) {
-        const string new_slice = seq->source.substr(index, slice_len);
+        const string new_slice = seq->source->substr(index, slice_len);
         const int new_slice_index = get_slice_index(new_slice);
         occurrence_array[new_slice_index]++;
     };
 
     function<void(int *, int, int)> decrement_slice_occurrence = [seq](int *occurrence_array, int index, int slice_len) {
-        const string new_slice = seq->source.substr(index, slice_len);
+        const string new_slice = seq->source->substr(index, slice_len);
         const int new_slice_index = get_slice_index(new_slice);
         occurrence_array[new_slice_index]--;
     };
@@ -82,7 +82,7 @@ void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
 
     vector<pair<int, int>> *filtered_out = new vector<pair<int, int>>();
 
-    for (int i = 0, seq_len = seq->source.length(), done = 0; i + slice_len < seq_len; i++)
+    for (int i = 0, seq_len = seq->source->length(), done = 0; i + slice_len < seq_len; i++)
     {
         if (print_progress && static_cast<int>(round((i + 1) * 100.0 / (seq_len - slice_len))) > done)
         {
@@ -147,8 +147,8 @@ void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
 
                 if (true)
                 {
-                    cout << low_complexity_region.first << "->" << low_complexity_region.second << " : " << seq->source.substr(low_complexity_region.first - 5, 5) << "|"
-                         << seq->source.substr(low_complexity_region.first, low_complexity_region.second - low_complexity_region.first) << "|" << seq->source.substr(low_complexity_region.second + 5, 5) << endl;
+                    cout << low_complexity_region.first << "->" << low_complexity_region.second << " : " << seq->source->substr(low_complexity_region.first - 5, 5) << "|"
+                         << seq->source->substr(low_complexity_region.first, low_complexity_region.second - low_complexity_region.first) << "|" << seq->source->substr(low_complexity_region.second + 5, 5) << endl;
                 }
 
                 i = filtered_out->back().second;
@@ -163,7 +163,7 @@ void dust(FastaSequence const *seq, int min_len, float score_increase_threshold,
     {
         for (int i = p.first; i < p.second; i++)
         {
-            seq->source[i] = tolower(seq->source[i]);
+            seq->source->at(i) = tolower(seq->source->at(i));
         }
         summary += p.second - p.first;
     }
