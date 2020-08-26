@@ -1,12 +1,14 @@
 CC = g++
-ALL_CPP_FILES = algos/*.cpp utils/*.cpp alignment.cpp
-OUTPUT_FILE = main
+ALIGNMENT_CPP_FILES = algos/*.cpp utils/*.cpp alignment.cpp
+ALIGNMENT_OUTPUT_FILE = alignment
 
 all:
 	make alignment
 
 alignment:
-	$(CC) $(ALL_CPP_FILES) -o $(OUTPUT_FILE) && ./$(OUTPUT_FILE)
+	$(CC) $(ALIGNMENT_CPP_FILES) -o $(ALIGNMENT_OUTPUT_FILE) && ./$(ALIGNMENT_OUTPUT_FILE)
+
+
 
 clean:
-	rm $(OUTPUT_FILE)
+	rm $(ALIGNMENT_OUTPUT_FILE)
