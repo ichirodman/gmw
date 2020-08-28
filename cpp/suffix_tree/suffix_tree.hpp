@@ -8,6 +8,7 @@ class SuffixTreeVertex final
 {
 public:
     SuffixTreeVertex(int entry_index, int length, bool leaf = false, bool root = false);
+    SuffixTreeVertex(int entry_index, int length, SuffixTreeVertex *parent, bool leaf = false, bool root = false);
     ~SuffixTreeVertex();
 
     void set_vertex_info(int, int);
@@ -47,8 +48,12 @@ public:
     void build(const std::string &);
 
     std::string get_string_tree_slice(int, int);
+
     std::string restore_prefix(SuffixTreeVertex *);
 
+    SuffixTreeVertex *get_root();
+
+private:
     SuffixTreeVertex *root;
     const std::string &string_tree;
 };

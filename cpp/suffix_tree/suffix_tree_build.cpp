@@ -3,5 +3,4 @@
 
 void SuffixTree::build(const std::string &tree_string)
 {
-    std::cout << "HERE: " << tree_string << std::endl;
 }
