@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 
-SuffixTreeVertex::SuffixTreeVertex(int entry_index, int length, bool leaf, bool root)
-    : entry_index(entry_index), length(length), leaf(leaf), root(root)
+SuffixTreeVertex::SuffixTreeVertex(int string_entry_index, int substring_length, bool is_leaf, bool is_root)
+    : string_entry_index(string_entry_index), substring_length(substring_length), leaf(is_leaf), root(is_root)
 {
     this->children = new std::vector<SuffixTreeVertex *>();
     this->prefix_links = new std::vector<SuffixTreeVertex *>();
@@ -11,8 +11,8 @@ SuffixTreeVertex::SuffixTreeVertex(int entry_index, int length, bool leaf, bool 
     this->parent = nullptr;
 };
 
-SuffixTreeVertex::SuffixTreeVertex(int entry_index, int length, SuffixTreeVertex *parent, bool leaf, bool root)
-    : SuffixTreeVertex(entry_index, length, leaf, root) { this->set_parent(parent); };
+SuffixTreeVertex::SuffixTreeVertex(int string_entry_index, int substring_length, SuffixTreeVertex *parent, bool is_leaf, bool is_root)
+    : SuffixTreeVertex(string_entry_index, substring_length, is_leaf, is_root) { this->set_parent(parent); };
 
 SuffixTreeVertex::~SuffixTreeVertex()
 {
@@ -21,10 +21,11 @@ SuffixTreeVertex::~SuffixTreeVertex()
     delete this->prefix_chars;
     delete this->parent;
 }
-void SuffixTreeVertex::set_vertex_info(int new_entry_index, int new_length)
+
+void SuffixTreeVertex::set_vertex_info(int string_entry_index, int substring_length)
 {
-    this->entry_index = new_entry_index;
-    this->length = new_length;
+    this->string_entry_index = string_entry_index;
+    this->substring_length = substring_length;
 }
 
 void SuffixTreeVertex::add_child(SuffixTreeVertex *child) { this->children->push_back(child); }
@@ -36,14 +37,14 @@ void SuffixTreeVertex::set_parent(SuffixTreeVertex *parent) {
 
 SuffixTreeVertex *SuffixTreeVertex::get_parent() { return this->parent; }
 
-int SuffixTreeVertex::get_entry_index() { return this->entry_index; }
+int SuffixTreeVertex::get_string_entry_index() { return this->string_entry_index; }
 
-int SuffixTreeVertex::get_length() { return this->length; }
+int SuffixTreeVertex::get_substring_length() { return this->substring_length; }
 
-void SuffixTreeVertex::add_prefix_link(SuffixTreeVertex *new_prefix_link, char new_prefix_char)
+void SuffixTreeVertex::add_prefix_link(SuffixTreeVertex *prefix_link, char prefix_char)
 {
-    this->prefix_links->push_back(new_prefix_link);
-    this->prefix_chars->push_back(new_prefix_char);
+    this->prefix_links->push_back(prefix_link);
+    this->prefix_chars->push_back(prefix_char);
 }
 
 bool SuffixTreeVertex::has_prefix_link(char prefix_char)
@@ -72,30 +73,30 @@ SuffixTreeVertex *SuffixTreeVertex::get_prefix_link(char prefix_char)
 
 bool SuffixTreeVertex::is_leaf() { return this->leaf; }
 
-int SuffixTreeVertex::if_leaf_get_entry_index() { return this->leaf ? this->entry_index : -1; };
+int SuffixTreeVertex::if_leaf_get_entry_index() { return this->leaf ? this->string_entry_index : -1; };
 
 bool SuffixTreeVertex::is_root() { return this->root; }
 
-SuffixTree::SuffixTree(const std::string &string_tree)
-    : string_tree(string_tree)
+SuffixTree::SuffixTree(const std::string &tree_string)
+    : tree_string(tree_string)
 {
-    this->root = new SuffixTreeVertex(0, 0, false, true);
-    this->build(string_tree);
+    this->root_vertex = new SuffixTreeVertex(0, 0, false, true);
+    this->build(tree_string);
 };
 
-SuffixTree::~SuffixTree() { delete this->root; }
+SuffixTree::~SuffixTree() { delete this->root_vertex; }
 
-std::string SuffixTree::get_string_tree_slice(int start_index, int length) { return this->string_tree.substr(start_index, length); }
+std::string SuffixTree::get_tree_string_slice(int start_index, int length) { return this->tree_string.substr(start_index, length); }
 
-std::string SuffixTree::restore_prefix(SuffixTreeVertex *prefix_end)
+std::string SuffixTree::restore_prefix_string(SuffixTreeVertex *prefix_end)
 {
     std::string prefix_string("");
     for (SuffixTreeVertex *vertex = prefix_end; !(vertex->is_root()); vertex = vertex->get_parent())
     {
-        std::string vertex_substring = this->get_string_tree_slice(vertex->get_entry_index(), vertex->get_length());
+        std::string vertex_substring = this->get_tree_string_slice(vertex->get_string_entry_index(), vertex->get_substring_length());
         prefix_string = vertex_substring + prefix_string;
     }
     return prefix_string;
 }
 
-SuffixTreeVertex *SuffixTree::get_root() { return this->root; }
+SuffixTreeVertex *SuffixTree::get_root_vertex() { return this->root_vertex; }

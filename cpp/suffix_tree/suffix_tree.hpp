@@ -18,8 +18,8 @@ public:
     void set_parent(SuffixTreeVertex *);
     SuffixTreeVertex *get_parent();
 
-    int get_entry_index();
-    int get_length();
+    int get_string_entry_index();
+    int get_substring_length();
 
     void add_prefix_link(SuffixTreeVertex *, char);
     bool has_prefix_link(char);
@@ -35,7 +35,7 @@ private:
     std::vector<SuffixTreeVertex *> *prefix_links;
     std::vector<char> *prefix_chars;
     SuffixTreeVertex *parent;
-    int entry_index, length;
+    int string_entry_index, substring_length;
     bool leaf, root;
 };
 
@@ -47,15 +47,15 @@ public:
 
     void build(const std::string &);
 
-    std::string get_string_tree_slice(int, int);
+    std::string get_tree_string_slice(int, int);
 
-    std::string restore_prefix(SuffixTreeVertex *);
+    std::string restore_prefix_string(SuffixTreeVertex *);
 
-    SuffixTreeVertex *get_root();
+    SuffixTreeVertex *get_root_vertex();
 
 private:
-    SuffixTreeVertex *root;
-    const std::string &string_tree;
+    SuffixTreeVertex *root_vertex;
+    const std::string &tree_string;
 };
 
 #endif
