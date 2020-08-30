@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+class SuffixTree;
+
 class SuffixTreeVertex final
 {
 public:
@@ -13,13 +15,14 @@ public:
 
     void set_vertex_info(int, int);
 
+    int get_string_entry_index();
+    int get_substring_length();
+
     void add_child(SuffixTreeVertex *);
+    std::vector<SuffixTreeVertex *> *get_childrens();
 
     void set_parent(SuffixTreeVertex *);
     SuffixTreeVertex *get_parent();
-
-    int get_string_entry_index();
-    int get_substring_length();
 
     void add_prefix_link(SuffixTreeVertex *, char);
     bool has_prefix_link(char);

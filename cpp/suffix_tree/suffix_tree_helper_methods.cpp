@@ -28,18 +28,21 @@ void SuffixTreeVertex::set_vertex_info(int string_entry_index, int substring_len
     this->substring_length = substring_length;
 }
 
+int SuffixTreeVertex::get_string_entry_index() { return this->string_entry_index; }
+
+int SuffixTreeVertex::get_substring_length() { return this->substring_length; }
+
 void SuffixTreeVertex::add_child(SuffixTreeVertex *child) { this->children->push_back(child); }
 
-void SuffixTreeVertex::set_parent(SuffixTreeVertex *parent) { 
-    this->parent = parent; 
+std::vector<SuffixTreeVertex *> *SuffixTreeVertex::get_childrens() { return this->children; }
+
+void SuffixTreeVertex::set_parent(SuffixTreeVertex *parent)
+{
+    this->parent = parent;
     parent->add_child(this);
 }
 
 SuffixTreeVertex *SuffixTreeVertex::get_parent() { return this->parent; }
-
-int SuffixTreeVertex::get_string_entry_index() { return this->string_entry_index; }
-
-int SuffixTreeVertex::get_substring_length() { return this->substring_length; }
 
 void SuffixTreeVertex::add_prefix_link(SuffixTreeVertex *prefix_link, char prefix_char)
 {
