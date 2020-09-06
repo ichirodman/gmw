@@ -2,15 +2,17 @@
 #include "suffix_tree.hpp"
 #include <string>
 #include <sstream> // for std::stringstream
+#include "suffix_tree_output.hpp"
 
 void test_suffix_tree_constructor();
 void test_suffix_tree_string_slice_getting();
-void test_suffix_tree_prefix_restoring();
 
 void test_suffix_tree_vertex_info();
 void test_suffix_tree_vertex_inheritance();
 void test_suffix_tree_vertex_prefix_link();
 void test_suffix_tree_vertex_leaf();
+
+void test_suffix_tree_build();
 
 void print_test_start(std::string const &test_name);
 void print_test_segment(std::string const &value_name, std::string const &got, std::string const &expected);
@@ -23,13 +25,16 @@ std::string convert_address_to_string(SuffixTreeVertex *);
 
 int main()
 {
-    test_suffix_tree_constructor();
-    test_suffix_tree_string_slice_getting();
-    test_suffix_tree_prefix_restoring();
-    test_suffix_tree_vertex_info();
-    test_suffix_tree_vertex_inheritance();
-    test_suffix_tree_vertex_prefix_link();
-    test_suffix_tree_vertex_leaf();
+    // test_suffix_tree_constructor();
+    // test_suffix_tree_string_slice_getting();
+    // test_suffix_tree_prefix_restoring();
+
+    // test_suffix_tree_vertex_info();
+    // test_suffix_tree_vertex_inheritance();
+    // test_suffix_tree_vertex_prefix_link();
+    // test_suffix_tree_vertex_leaf();
+
+    test_suffix_tree_build();
     return 0;
 }
 
@@ -58,24 +63,6 @@ void test_suffix_tree_string_slice_getting()
     std::string tree_string_slice = st->get_tree_string_slice(i, length), expected_slice = tree_string.substr(i, length);
 
     print_test_segment("tree string slice", tree_string_slice, expected_slice);
-
-    delete st;
-    print_test_end();
-}
-
-void test_suffix_tree_prefix_restoring()
-{
-    print_test_start("suffix tree prefix restoring");
-
-    std::string const tree_string("prefix");
-    SuffixTree *st = new SuffixTree(tree_string);
-    SuffixTreeVertex *stv1 = new SuffixTreeVertex(0, 2, st->get_root_vertex());
-    std::cout << stv1->get_parent() << std::endl;
-    SuffixTreeVertex *stv2 = new SuffixTreeVertex(2, 2, stv1);
-    SuffixTreeVertex *stv3 = new SuffixTreeVertex(4, 2, stv2);
-    std::string restored_prefix = st->restore_prefix_string(stv3);
-
-    print_test_segment("prefix restoring", restored_prefix, tree_string);
 
     delete st;
     print_test_end();
@@ -137,6 +124,29 @@ void test_suffix_tree_vertex_leaf()
     print_test_segment("suffix tree vertex's leaf vertex class affiliation", stv_2->is_leaf(), leaf_2);
     print_test_segment("suffix tree vertex's root vertex class affiliation", stv_1->is_root(), root_1);
     print_test_segment("suffix tree vertex's root vertex class affiliation", stv_2->is_root(), root_2);
+
+    print_test_end();
+}
+
+void test_suffix_tree_build()
+{
+    print_test_start("tree suffix tree build");
+
+    SuffixTree *st = new SuffixTree("fucuk");
+
+    std::cout << "CHILDS: " << st->get_root_vertex()->get_childrens()->size() << std::endl;
+
+    for (int i = 0; i < st->get_root_vertex()->get_childrens()->size(); ++i)
+    {
+        SuffixTreeVertex *child = st->get_root_vertex()->get_childrens()->at(i);
+        int entry = child->get_string_entry_index(), len = child->get_substring_length();
+        std::cout << entry << " " << len << std::endl;
+        std::cout << st->get_tree_string_slice(entry, len) << std::endl;
+    }
+
+    // print_suffix_tree(st);
+
+    delete st;
 
     print_test_end();
 }

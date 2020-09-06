@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#define END_CHAR '$' // Non-alphabetic suffixes end char
+
 class SuffixTree;
 
 class SuffixTreeVertex final
@@ -18,7 +20,9 @@ public:
     int get_string_entry_index();
     int get_substring_length();
 
+    bool has_child(SuffixTreeVertex *);
     void add_child(SuffixTreeVertex *);
+    void remove_child(SuffixTreeVertex *);
     std::vector<SuffixTreeVertex *> *get_childrens();
 
     void set_parent(SuffixTreeVertex *);
@@ -29,7 +33,7 @@ public:
     SuffixTreeVertex *get_prefix_link(char);
 
     bool is_leaf();
-    int if_leaf_get_entry_index();
+    int if_leaf_get_suffix_entry_index();
 
     bool is_root();
 
@@ -45,18 +49,25 @@ private:
 class SuffixTree final
 {
 public:
-    SuffixTree(const std::string &);
+    explicit SuffixTree(const std::string &);
     ~SuffixTree();
-
-    void build(const std::string &);
-
-    std::string get_tree_string_slice(int, int);
 
     std::string restore_prefix_string(SuffixTreeVertex *);
 
+    std::string get_vertex_substring(SuffixTreeVertex *);
+
+    std::string get_tree_string_slice(int, int);
+
     SuffixTreeVertex *get_root_vertex();
 
+    int get_tree_string_length();
+
+    SuffixTreeVertex *get_leaf_by_suffix(std::string &);
+    bool has_this_suffix(std::string &);
+
 private:
+    void build(const std::string &);
+
     SuffixTreeVertex *root_vertex;
     const std::string &tree_string;
 };
