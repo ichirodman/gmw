@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <iostream>
-#include "../../src/suffix_tree/suffix_tree.h"
+#include "../../Source/SuffixTree/SuffixTree.h"
 
 
 void updateInfoTest();

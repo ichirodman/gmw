@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../src/suffix_tree/suffix_tree.h"
+#include "../../Source/SuffixTree/SuffixTree.h"
 
 int main() {
 	SuffixTree * sf = new SuffixTree("abacaba$");

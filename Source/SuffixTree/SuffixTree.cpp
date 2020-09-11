@@ -1,4 +1,4 @@
-#include "suffix_tree.h"
+#include "SuffixTree.h"
 #include <iostream>
 #include <string>
 
