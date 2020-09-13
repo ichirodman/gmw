@@ -4,6 +4,8 @@
 SuffixTreeVertex::SuffixTreeVertex(int entryIndex, int substringLength) 
 	: parent(nullptr), suffixTreeStringEntryIndex(entryIndex), suffixTreeStringSubstringLength(substringLength) {
 	this->children = new std::vector<SuffixTreeVertex *>();
+	this->prefixLinkedVertexes = new std::vector<SuffixTreeVertex *>();
+	this->prefixLinkedChars = new std::vector<char>();
 }
 
 SuffixTreeVertex::~SuffixTreeVertex() {
@@ -41,6 +43,24 @@ void SuffixTreeVertex::removeChildRelation(SuffixTreeVertex * childToRemove) {
 			child->parent = nullptr;
 		}
 	}
+}
+
+void SuffixTreeVertex::addPrefixLinkedVertex(SuffixTreeVertex * prefixLinkedVertex, char prefixLinkedChar) {
+	this->prefixLinkedVertexes->push_back(prefixLinkedVertex);
+	this->prefixLinkedChars->push_back(prefixLinkedChar);
+}
+
+SuffixTreeVertex * SuffixTreeVertex::getPrefixLinkedVertex(char prefixLinkedCharToSearch) {
+	for (int i = 0; i < this->prefixLinkedChars->size(); ++i) {
+		if (this->prefixLinkedChars->at(i) == prefixLinkedCharToSearch) {
+			return this->prefixLinkedVertexes->at(i);
+		}
+	}
+	return nullptr;
+}
+
+bool SuffixTreeVertex::hasPrefixLinkedVertex(char prefixLinkedCharToSearch) {
+	return getPrefixLinkedVertex(prefixLinkedCharToSearch) != nullptr;
 }
 	
 SuffixTreeVertex * SuffixTreeVertex::getParent() {

@@ -55,6 +55,12 @@ public:
 
 	void removeChildRelation(SuffixTreeVertex *);
 	
+	void addPrefixLinkedVertex(SuffixTreeVertex *, char);
+
+	SuffixTreeVertex * getPrefixLinkedVertex(char);
+
+	bool hasPrefixLinkedVertex(char);
+
 	SuffixTreeVertex * getParent();
 
 	bool isRoot();
@@ -63,6 +69,8 @@ public:
 
 private:
 	std::vector<SuffixTreeVertex *> * children;
+	std::vector<SuffixTreeVertex *> * prefixLinkedVertexes;
+	std::vector<char> * prefixLinkedChars;
 	SuffixTreeVertex * parent;
 	int suffixTreeStringEntryIndex, suffixTreeStringSubstringLength;
 };

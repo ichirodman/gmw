@@ -10,6 +10,10 @@ namespace tests {
 
 	void removeChildTest();
 
+	void addPrefixLinkedVertex();
+
+	void getPrefixLinkedVertex();
+
 	void parentSetTest();
 
 	void parentSetTest();
@@ -24,6 +28,8 @@ int main() {
 	tests::updateInfoTest();
 	tests::childAddTest();
 	tests::removeChildTest();
+	tests::addPrefixLinkedVertex();
+	tests::getPrefixLinkedVertex();	
 	tests::parentSetTest();
 	tests::parentSetTest();
 	tests::rootClassificationTest();
@@ -69,6 +75,26 @@ namespace tests {
 		assert(isElementExist(children, child1));
 		assert(isElementExist(children, child3));
 		assert(!isElementExist(children, child2));
+	}
+
+	void addPrefixLinkedVertex() {
+		SuffixTreeVertex * independentVertex = new SuffixTreeVertex(0, 0),
+			* prefixLinkedVertex = new SuffixTreeVertex(0, 0);
+		char prefixLink = 'c';
+
+		independentVertex->addPrefixLinkedVertex(prefixLinkedVertex, prefixLink);
+
+		assert(independentVertex->hasPrefixLinkedVertex(prefixLink));
+	}
+
+	void getPrefixLinkedVertex() {
+		SuffixTreeVertex * independentVertex = new SuffixTreeVertex(0, 0),
+			* prefixLinkedVertex = new SuffixTreeVertex(0, 0);
+		char prefixLink = 'c';
+
+		independentVertex->addPrefixLinkedVertex(prefixLinkedVertex, prefixLink);
+
+		assert(independentVertex->getPrefixLinkedVertex(prefixLink) == prefixLinkedVertex);
 	}
 
 	void parentSetTest() {
