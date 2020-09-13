@@ -1,5 +1,5 @@
 #include "SuffixTree.h"
-#include <iostream>
+
 
 SuffixTreeVertex::SuffixTreeVertex(int entryIndex, int substringLength) 
 	: parent(nullptr), suffixTreeStringEntryIndex(entryIndex), suffixTreeStringSubstringLength(substringLength) {

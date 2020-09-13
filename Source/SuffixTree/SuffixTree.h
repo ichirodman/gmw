@@ -1,8 +1,10 @@
 #ifndef SUFFIX_TREE
 #define SUFFIX_TREE
 
+
 #include <string>
 #include <vector>
+
 
 class SuffixTreeBuilder;
 
@@ -15,15 +17,25 @@ public:
 	~SuffixTree();
 
 	int getEntryIndex(std::string);
+
 private:
 	SuffixTreeBuilder * builder;
 };
 
 class SuffixTreeBuilder {
 public:
-	void build(const std::string &);
-	SuffixTreeVertex * getRoot();
-	std::string getVertexSubstring();
+	SuffixTreeBuilder(std::string);
+	~SuffixTreeBuilder();
+
+	const SuffixTreeVertex * getRoot();
+	
+	std::string getVertexSubstring(SuffixTreeVertex *);
+
+	void build();
+
+private:
+	const std::string suffixTreeString;
+	const SuffixTreeVertex * root;
 };
 
 
@@ -54,5 +66,6 @@ private:
 	SuffixTreeVertex * parent;
 	int suffixTreeStringEntryIndex, suffixTreeStringSubstringLength;
 };
+
 
 #endif
