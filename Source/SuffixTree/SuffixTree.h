@@ -29,6 +29,8 @@ public:
 
 	const SuffixTreeVertex * getRoot();
 	
+	std::string getSuffixTreeSubstring(int, int);
+
 	std::string getVertexSubstring(SuffixTreeVertex *);
 
 	void build();

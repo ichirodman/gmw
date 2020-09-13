@@ -14,8 +14,11 @@ const SuffixTreeVertex * SuffixTreeBuilder::getRoot() {
     return this->root;
 }
 
+std::string SuffixTreeBuilder::getSuffixTreeSubstring(int entryIndex, int substringLength) {
+    return this->suffixTreeString.substr(entryIndex, substringLength);
+}
+
 std::string SuffixTreeBuilder::getVertexSubstring(SuffixTreeVertex * vertex) {
     std::pair<int, int> entryIndexAndSubstringLength = vertex->getInfo();
-    return this->suffixTreeString.substr(entryIndexAndSubstringLength.first, 
-                                         entryIndexAndSubstringLength.second);
+    return this->getSuffixTreeSubstring(entryIndexAndSubstringLength.first, entryIndexAndSubstringLength.second);
 }
