@@ -1,4 +1,4 @@
-#include "../../Source/SuffixTree/SuffixTree.h"
+#include "../../Source/SuffixTree/SuffixTree.hpp"
 
 
 int main() {

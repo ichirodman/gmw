@@ -1,4 +1,4 @@
-#include "SuffixTree.h"
+#include "SuffixTree.hpp"
 #include <iostream>
 #include <string>
 

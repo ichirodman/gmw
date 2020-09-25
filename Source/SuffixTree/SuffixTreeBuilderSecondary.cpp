@@ -1,4 +1,4 @@
-#include "SuffixTree.h"
+#include "SuffixTree.hpp"
 
 #define SPECIAL_END_CHAR "$"
 
