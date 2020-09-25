@@ -1,4 +1,5 @@
-#include "../../Source/SuffixTree/SuffixTree.hpp"
+#include "../../Source/SuffixTree/SuffixTreeBuilder/SuffixTreeBuilder.hpp"
+#include "../../Source/SuffixTree/SuffixTreeBuilder/BuildSubsidary/BuildSubsidary.hpp"
 #include <assert.h>
 #include <iostream>
 
@@ -7,12 +8,48 @@ void getRootTest();
 
 void getVertexSubstringTest();
 
+void getOverlayLengthTest();
+
+void buildInIntermediaryTest();
+
+void createIndependentLeafVertexTest();
+
+void hasChildWithPrefixCharTest();
+
+void getChildWithPrefixCharTest();
+
+void goUpUntilFoundPrefixLinkTest();
+
+void goDownUntilSuffixSuperimposesTest();
+
+void isVertexSubstringSuperimposesWithSuffixTest();
+
+void addLeafToVertexTest();
+
+void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest();
+
+void forkBranchAndGetNewLeafTest();
+
+void handleNextSuffixAndGetNewLeafTest();
+
 void buildTest();
 
 int main() {
     getRootTest();
     getVertexSubstringTest();
-    // buildTest();
+    getOverlayLengthTest();
+    buildInIntermediaryTest();
+    createIndependentLeafVertexTest();
+    hasChildWithPrefixCharTest();
+    getChildWithPrefixCharTest();
+    goUpUntilFoundPrefixLinkTest();
+    goDownUntilSuffixSuperimposesTest();
+    isVertexSubstringSuperimposesWithSuffixTest();
+    addLeafToVertexTest();
+    splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest();
+    forkBranchAndGetNewLeafTest();
+    handleNextSuffixAndGetNewLeafTest();
+    buildTest();
     return 0;
 }
 
@@ -45,6 +82,55 @@ void getVertexSubstringTest() {
 
     delete stb;
     delete stv1, stv2, stv3;
+}
+
+
+void getOverlayLengthTest() {
+    assert(true);
+}
+
+void buildInIntermediaryTest() {
+    assert(true);
+}
+
+void createIndependentLeafVertexTest() {
+    assert(true);
+}
+
+void hasChildWithPrefixCharTest() {
+    assert(true);
+}
+
+void getChildWithPrefixCharTest() {
+    assert(true);
+}
+
+void goUpUntilFoundPrefixLinkTest() {
+    assert(true);
+}
+
+void goDownUntilSuffixSuperimposesTest() {
+    assert(true);
+}
+
+void isVertexSubstringSuperimposesWithSuffixTest() {
+    assert(true);
+}
+
+void addLeafToVertexTest() {
+    assert(true);
+}
+
+void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest() {
+    assert(true);
+}
+
+void forkBranchAndGetNewLeafTest() {
+    assert(true);
+}
+
+void handleNextSuffixAndGetNewLeafTest() {
+    assert(true);
 }
 
 void buildTest() {

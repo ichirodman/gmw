@@ -1,6 +1,6 @@
 CC = g++
 
-SUFFIX_TREE_SOURCE_FILES=Source/SuffixTree/*.cpp
+SUFFIX_TREE_SOURCE_FILES=$(shell find ./Source/SuffixTree -name "*.cpp")
 
 SUFFIX_TREE_TEST_FILES=Tests/SuffixTree/SuffixTreeTest.cpp
 SUFFIX_TREE_VERTEX_TEST_FILES=Tests/SuffixTree/SuffixTreeVertexTest.cpp

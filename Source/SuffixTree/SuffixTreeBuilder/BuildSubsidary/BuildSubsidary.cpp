@@ -1,32 +1,7 @@
-#include "SuffixTree.hpp"
-#include <assert.h>
-#include <string>
-#include <iostream>
+#include "BuildSubsidary.hpp"
 
 
-void handleNextSuffix(SuffixTreeBuilder *, SuffixTreeVertex *, std::string);
-
-std::pair<SuffixTreeVertex *, std::string> goUpUntilFoundPrefixLink(SuffixTreeBuilder *, 
-                                                SuffixTreeVertex *, char);
-
-std::pair<SuffixTreeVertex *, std::string> goDownUntilSuffixSuperimposes(SuffixTreeBuilder *,
-                                                SuffixTreeVertex *, std::string);
-
-SuffixTreeVertex * getChildWithPrefixChar(SuffixTreeBuilder *, SuffixTreeVertex *, char);
-
-bool hasChildWithPrefixChar(SuffixTreeBuilder *, SuffixTreeVertex *, char);
-
-bool isVertexSubstringSuperimposesWithSuffix(SuffixTreeBuilder *, SuffixTreeVertex *, std::string);
-
-void SuffixTreeBuilder::build() {
-    SuffixTreeVertex * lastLeafVertex = const_cast<SuffixTreeVertex *>(this->getRoot());
-    for (int i = 1, stringLength = this->suffixTreeString.length(); i <= stringLength; ++i) {
-        std::string nextSuffix = this->getSuffixTreeSubstring(stringLength - i, i);
-        handleNextSuffix(this, lastLeafVertex, nextSuffix);
-    }
-}
-
-void handleNextSuffix(SuffixTreeBuilder * builder, SuffixTreeVertex * previousLeafVertex, 
+SuffixTreeVertex * handleNextSuffixAndGetNewLeaf(SuffixTreeBuilder * builder, SuffixTreeVertex * previousLeafVertex, 
                       std::string nextSuffix) {
     using std::pair;
 
@@ -43,7 +18,8 @@ void handleNextSuffix(SuffixTreeBuilder * builder, SuffixTreeVertex * previousLe
     SuffixTreeVertex * buildInPlaceVertex = buildInPlaceVertexAndLeftoverSuffix.first;
     suffixString = buildInPlaceVertexAndLeftoverSuffix.second;
 
-
+    SuffixTreeVertex * newLeaf = forkBranchAndGetNewLeaf(builder, buildInPlaceVertex, suffixString);
+    return newLeaf;
 }
 
 std::pair<SuffixTreeVertex *, std::string> goUpUntilFoundPrefixLink(SuffixTreeBuilder * builder, 
@@ -90,4 +66,55 @@ bool isVertexSubstringSuperimposesWithSuffix(SuffixTreeBuilder * builder, Suffix
     std::string vertexSubstring = builder->getVertexSubstring(vertex);
     return suffixString.length() >= vertexSubstring.length() && 
         suffixString.substr(0, vertexSubstring.length()) == vertexSubstring;
+}
+
+SuffixTreeVertex * forkBranchAndGetNewLeaf(SuffixTreeBuilder * builder, SuffixTreeVertex * closestExistingVertex, 
+                                           std::string suffixString) {
+    char firstSuffixChar = suffixString.at(0);
+    if (hasChildWithPrefixChar(builder, closestExistingVertex, firstSuffixChar)) {
+        closestExistingVertex = splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertex(builder, closestExistingVertex, suffixString);
+        int closestExistingVertexSubstringLength = closestExistingVertex->getInfo().second;
+        suffixString = suffixString.substr(closestExistingVertexSubstringLength, suffixString.length() - closestExistingVertexSubstringLength);
+    }
+    SuffixTreeVertex * newLeaf = addLeafToVertex(builder, closestExistingVertex, suffixString);
+    return newLeaf;
+}
+
+
+SuffixTreeVertex * splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertex(SuffixTreeBuilder * builder, SuffixTreeVertex * branchParent, std::string suffixString) {
+    SuffixTreeVertex * branchChild = getChildWithPrefixChar(builder, branchParent, suffixString.at(0));
+    std::string branchString = builder->getVertexSubstring(branchChild);
+    int suffixAndBranchStringsOverlayLength = getOverlayLength(suffixString, branchString);
+
+    int branchChildSubstringEntryIndex = branchChild->getInfo().first, branchChildSubstringLength = branchChild->getInfo().second;;
+    SuffixTreeVertex * splitPlaceVertex = new SuffixTreeVertex(branchChildSubstringEntryIndex, suffixAndBranchStringsOverlayLength);
+    branchChild->updateInfo(branchChildSubstringEntryIndex + suffixAndBranchStringsOverlayLength, 
+        branchChildSubstringLength - suffixAndBranchStringsOverlayLength);
+    buildInIntermediary(branchParent, branchChild, splitPlaceVertex);
+    return splitPlaceVertex;
+}
+
+void buildInIntermediary(SuffixTreeVertex * parent, SuffixTreeVertex * child, SuffixTreeVertex * intermediary) {
+    parent->removeChildRelation(child);
+    parent->addChildRelation(intermediary);
+    intermediary->addChildRelation(child);
+}
+
+int getOverlayLength(std::string first, std::string second) {
+    int overlayLength = 0;
+    for (; overlayLength < first.length() && overlayLength < second.length() 
+        && first.at(overlayLength) == second.at(overlayLength); ++overlayLength);
+    return overlayLength;
+}
+
+SuffixTreeVertex * addLeafToVertex(SuffixTreeBuilder * builder, SuffixTreeVertex * newLeafParent, std::string suffixString) {
+    SuffixTreeVertex * newLeaf = createIndependentLeafVertex(builder, suffixString);
+    newLeafParent->addChildRelation(newLeaf);
+    return newLeaf;
+}
+
+SuffixTreeVertex * createIndependentLeafVertex(SuffixTreeBuilder * builder, std::string suffixString) {
+    int suffixEntryIndex = builder->getTreeStringLength() - suffixString.length();
+    SuffixTreeVertex * independentVertex = new SuffixTreeVertex(suffixEntryIndex, suffixString.length());
+    return independentVertex;
 }

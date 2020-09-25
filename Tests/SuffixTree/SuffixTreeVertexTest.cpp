@@ -1,4 +1,4 @@
-#include "../../Source/SuffixTree/SuffixTree.hpp"
+#include "../../Source/SuffixTree/SuffixTreeBuilder/SuffixTreeVertex/SuffixTreeVertex.hpp"
 #include <assert.h>
 
 
