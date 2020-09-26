@@ -9,8 +9,6 @@
 
 
 void SuffixTreeBuilder::build() {
-    std::cout << "TODO: BUILD" << std::endl;
-    return;
     SuffixTreeVertex * lastLeafBuiltVertex = const_cast<SuffixTreeVertex *>(this->getRoot());
     for (int i = 1, stringLength = this->suffixTreeString.length(); i <= stringLength; ++i) {
         std::string nextSuffix = this->getSuffixTreeSubstring(stringLength - i, i);
@@ -26,7 +24,7 @@ SuffixTreeBuilder::~SuffixTreeBuilder() {
     delete this->root;
 }
 
-const SuffixTreeVertex * SuffixTreeBuilder::getRoot() {
+SuffixTreeVertex * SuffixTreeBuilder::getRoot() {
     return this->root;
 }
 

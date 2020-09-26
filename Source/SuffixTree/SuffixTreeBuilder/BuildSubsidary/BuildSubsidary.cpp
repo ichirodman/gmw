@@ -1,22 +1,33 @@
 #include "BuildSubsidary.hpp"
+// TODO
+// Delete this directive
+#include <iostream>
 
 
 SuffixTreeVertex * handleNextSuffixAndGetNewLeaf(SuffixTreeBuilder * builder, SuffixTreeVertex * previousLeafVertex, 
-                      std::string nextSuffix) {
+                                                 std::string nextSuffix) {
     using std::pair;
+
+    std::cout << "NEW SUFFIX : " << nextSuffix << std::endl;
 
     pair<SuffixTreeVertex *, std::string> vertexWithPrefixLinkAndRestoredSuffix = 
         goUpUntilFoundPrefixLink(builder, previousLeafVertex, nextSuffix.at(0));
     SuffixTreeVertex * previousBranchVertexWithPrefixLink = vertexWithPrefixLinkAndRestoredSuffix.first;
     std::string suffixString = vertexWithPrefixLinkAndRestoredSuffix.second;
     
+    std::cout << "HERE1 : " << previousBranchVertexWithPrefixLink->isRoot() << std::endl;
+
     SuffixTreeVertex * nextBranchPrefixLinkedVertex = 
         previousBranchVertexWithPrefixLink->isRoot() ? previousBranchVertexWithPrefixLink : 
             previousBranchVertexWithPrefixLink->getPrefixLinkedVertex(nextSuffix.at(0));
+
+    std::cout << "HERE2 : " << suffixString << std::endl;
     pair<SuffixTreeVertex *, std::string> buildInPlaceVertexAndLeftoverSuffix =
         goDownUntilSuffixSuperimposes(builder, nextBranchPrefixLinkedVertex, suffixString);
+    std::cout << "HERE3" << std::endl;
     SuffixTreeVertex * buildInPlaceVertex = buildInPlaceVertexAndLeftoverSuffix.first;
     suffixString = buildInPlaceVertexAndLeftoverSuffix.second;
+    std::cout << "HERE4" << std::endl;
 
     SuffixTreeVertex * newLeaf = forkBranchAndGetNewLeaf(builder, buildInPlaceVertex, suffixString);
     return newLeaf;
@@ -26,7 +37,10 @@ std::pair<SuffixTreeVertex *, std::string> goUpUntilFoundPrefixLink(SuffixTreeBu
                                         SuffixTreeVertex * vertex, char prefixLinkedChar) {
     std::string restoredSuffixWhileGoUp = "";
     for (; !(vertex->isRoot()) && !(vertex->hasPrefixLinkedVertex(prefixLinkedChar)); vertex = vertex->getParent()) {
-        restoredSuffixWhileGoUp += builder->getVertexSubstring(vertex);
+        restoredSuffixWhileGoUp = builder->getVertexSubstring(vertex) + restoredSuffixWhileGoUp;
+    }
+    if (vertex->isRoot()) {
+        restoredSuffixWhileGoUp = prefixLinkedChar + restoredSuffixWhileGoUp;
     }
     return { vertex, restoredSuffixWhileGoUp };
 }

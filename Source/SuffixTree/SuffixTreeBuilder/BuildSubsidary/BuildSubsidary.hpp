@@ -23,7 +23,7 @@ SuffixTreeVertex * forkBranchAndGetNewLeaf(SuffixTreeBuilder *, SuffixTreeVertex
 
 SuffixTreeVertex * splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertex(SuffixTreeBuilder *, SuffixTreeVertex *, std::string);
 
-void buildInIntermediary(SuffixTreeVertex *, SuffixTreeVertex *, SuffixTreeVertex *);
+void buildInIntermediary(SuffixTreeVertex * parent, SuffixTreeVertex * child, SuffixTreeVertex * intermediary);
 
 int getOverlayLength(std::string, std::string);
 

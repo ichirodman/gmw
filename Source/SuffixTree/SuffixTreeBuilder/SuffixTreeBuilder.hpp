@@ -11,7 +11,7 @@ public:
 	SuffixTreeBuilder(std::string);
 	~SuffixTreeBuilder();
 
-	const SuffixTreeVertex * getRoot();
+	SuffixTreeVertex * getRoot();
 	
 	std::string getSuffixTreeSubstring(int, int);
 
@@ -23,7 +23,7 @@ public:
 
 private:
 	const std::string suffixTreeString;
-	const SuffixTreeVertex * root;
+	SuffixTreeVertex * root;
 };
 
 
