@@ -21,6 +21,8 @@ public:
 
 	void build();
 
+	void printDebugView();
+
 private:
 	const std::string suffixTreeString;
 	SuffixTreeVertex * root;

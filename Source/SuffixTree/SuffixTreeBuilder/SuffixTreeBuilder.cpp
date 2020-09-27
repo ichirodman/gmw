@@ -8,14 +8,8 @@
 #define SPECIAL_END_CHAR "$"
 
 
-void SuffixTreeBuilder::build() {
-    SuffixTreeVertex * lastLeafBuiltVertex = const_cast<SuffixTreeVertex *>(this->getRoot());
-    for (int i = 1, stringLength = this->suffixTreeString.length(); i <= stringLength; ++i) {
-        std::string nextSuffix = this->getSuffixTreeSubstring(stringLength - i, i);
-        std::cout << "Next suffix: " << nextSuffix << std::endl;
-        lastLeafBuiltVertex = handleNextSuffixAndGetNewLeaf(this, lastLeafBuiltVertex, nextSuffix);
-    }
-}
+std::string suffixTreeDebugView = "";
+
 
 SuffixTreeBuilder::SuffixTreeBuilder(std::string suffixTreeString) 
     : suffixTreeString(suffixTreeString + SPECIAL_END_CHAR), root(new SuffixTreeVertex(0, 0)) {}
@@ -39,4 +33,54 @@ std::string SuffixTreeBuilder::getVertexSubstring(SuffixTreeVertex * vertex) {
 
 int SuffixTreeBuilder::getTreeStringLength() {
     return this->suffixTreeString.length();
+}
+
+void saveRecursiveSuffixTreeVertexDebugView(SuffixTreeBuilder *, SuffixTreeVertex *, int);
+
+std::string getFormatedSuffixTreeVertexDebugView(std::string, int);
+
+void SuffixTreeBuilder::printDebugView() {
+    suffixTreeDebugView = "";
+    saveRecursiveSuffixTreeVertexDebugView(this, this->getRoot(), 0);
+    std::cout << suffixTreeDebugView << std::endl;
+}
+
+void SuffixTreeBuilder::build() {
+    SuffixTreeVertex * lastLeafBuiltVertex = const_cast<SuffixTreeVertex *>(this->getRoot());
+    for (int i = 1, lastPercent = 0, stringLength = this->suffixTreeString.length(); i <= stringLength; ++i) {
+        if (i * 100.0 / (stringLength * 0.995) > lastPercent) {
+            std::cout << "BUILDING SUFFIX TREE : " << lastPercent << "% done" << std::endl;
+            lastPercent++;
+        }
+        std::string nextSuffix = this->getSuffixTreeSubstring(stringLength - i, i);
+        // std::cout << "Next suffix: " << nextSuffix << std::endl;
+        SuffixTreeVertex * nextSuffixLeaf = handleNextSuffixAndGetNewLeaf(this, lastLeafBuiltVertex, nextSuffix);
+        lastLeafBuiltVertex = nextSuffixLeaf;
+    }
+}
+
+void saveRecursiveSuffixTreeVertexDebugView(SuffixTreeBuilder * builder, SuffixTreeVertex * vertex, int deep) {
+    std::string vertexSubstring = vertex->isRoot() ? "#ROOT#" : builder->getVertexSubstring(vertex);
+    std::string view = getFormatedSuffixTreeVertexDebugView(vertexSubstring, deep);
+    for (int i = 0; i < vertex->getChildren()->size(); ++i) {
+        SuffixTreeVertex * child = vertex->getChildren()->at(i);
+        saveRecursiveSuffixTreeVertexDebugView(builder, child, deep + 1);
+    }
+    suffixTreeDebugView.insert(0, view);
+}
+
+std::string getFormatedSuffixTreeVertexDebugView(std::string vertexSubstring, int deep) {
+    std::string view = "";
+    for (int i = 0; i < deep + 1; ++i) {
+        view += " | ";
+    }
+    view += "\n";
+    for (int i = 0; i < deep; ++i) {
+        view += " | ";
+    }
+    view += " |- ";
+    view += vertexSubstring;
+    view += " (deep : " + std::to_string(deep) + ")";
+    view += "\n";
+    return view;
 }

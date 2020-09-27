@@ -2,10 +2,11 @@
 #include <fstream>
 #include <iostream>
 
-FastaFileContent::FastaFileContent(std::string &filename) : filename(filename)
+FastaFileContent::FastaFileContent(std::string filename) : filename(filename)
 {
     std::string line;
-    std::ifstream in("../data/" + filename);
+    std::ifstream in("./Data/" + filename);
+    std::cout << "FILENAME: " << "../Data/" + filename << std::endl;
     if (in.is_open())
     {
         while (getline(in, line))
@@ -22,7 +23,7 @@ FastaFileContent::FastaFileContent(std::string &filename) : filename(filename)
     }
     else
     {
-        std::cerr << "File not found";
+        std::cerr << "File not found" << std::endl;
     }
     in.close();
 }

@@ -1,5 +1,9 @@
 CC = g++
 
+MAIN_ALGO_FILE=Source/main.cpp
+
+UTILS_FILES=$(shell find ./Source/Utils -name "*.cpp")
+
 SUFFIX_TREE_SOURCE_FILES=$(shell find ./Source/SuffixTree -name "*.cpp")
 
 SUFFIX_TREE_TEST_FILES=Tests/SuffixTree/SuffixTreeTest.cpp
@@ -10,7 +14,7 @@ OUTPUT_BIN=LastCompilationBin
 
 
 all:
-	@echo "There's nothing to compile :)"
+	$(CC) $(MAIN_ALGO_FILE) $(UTILS_FILES) $(SUFFIX_TREE_SOURCE_FILES) -o $(OUTPUT_BIN); ./$(OUTPUT_BIN)
 
 tests: suffix_tree_test suffix_tree_builder_test suffix_tree_vertex_test
 

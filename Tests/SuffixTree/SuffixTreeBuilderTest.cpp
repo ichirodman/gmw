@@ -1,7 +1,6 @@
 #include "../../Source/SuffixTree/SuffixTreeBuilder/SuffixTreeBuilder.hpp"
 #include "../../Source/SuffixTree/SuffixTreeBuilder/BuildSubsidary/BuildSubsidary.hpp"
 #include <assert.h>
-#include <iostream>
 
 
 void getRootTest();
@@ -26,6 +25,10 @@ void goDownUntilSuffixSuperimposesTest();
 
 void addLeafToVertexTest();
 
+void addInterleafsPrefixLinkTest();
+
+void addInterbranchesPrefixLinkIfPossibleTest();
+
 void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest();
 
 void forkBranchAndGetNewLeafTest();
@@ -37,12 +40,6 @@ void buildTest();
 SuffixTreeBuilder * createHelloWorldSuffixTreeBuilder();
 
 std::string getSuffixTreeBuilderString(SuffixTreeBuilder *);
-
-void printSuffixTreeDebugView(SuffixTreeBuilder *);
-
-std::string getRecursiveSuffixTreeVertexDebugView(SuffixTreeBuilder *, SuffixTreeVertex *, int);
-
-std::string getFormatedSuffixTreeVertexDebugView(std::string, int);
 
 int main() {
     getRootTest();
@@ -56,6 +53,8 @@ int main() {
     goUpUntilFoundPrefixLinkTest();
     goDownUntilSuffixSuperimposesTest();
     addLeafToVertexTest();
+    addInterleafsPrefixLinkTest();
+    addInterbranchesPrefixLinkIfPossibleTest();
     splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest();
     forkBranchAndGetNewLeafTest();
     handleNextSuffixAndGetNewLeafTest();
@@ -291,7 +290,6 @@ void forkBranchAndGetNewLeafTest() {
 }
 
 void handleNextSuffixAndGetNewLeafTest() {
-    std::cout << "STARTING TEST" << std::endl;
     SuffixTreeBuilder * builder = new SuffixTreeBuilder("abacaba");
     std::string suffixTreeString = getSuffixTreeBuilderString(builder);
     int stringLength = suffixTreeString.length();
@@ -301,7 +299,6 @@ void handleNextSuffixAndGetNewLeafTest() {
     root->addChildRelation(firstBuiltVertex);
     root->addChildRelation(secondBuiltVertex);
 
-    std::cout << suffixTreeString.substr(stringLength - 3, 3) << std::endl;
     auto thirdBuiltLeaf = handleNextSuffixAndGetNewLeaf(builder, secondBuiltVertex, 
         suffixTreeString.substr(stringLength - 3, 3));
     auto fourthBuiltLeaf = handleNextSuffixAndGetNewLeaf(builder, thirdBuiltLeaf, 
@@ -315,7 +312,7 @@ void buildTest() {
     
     stb->build();
 
-    printSuffixTreeDebugView(stb);
+    stb->printDebugView();
 
     delete stb;
 }
@@ -330,32 +327,35 @@ std::string getSuffixTreeBuilderString(SuffixTreeBuilder * builder) {
     return builder->getSuffixTreeSubstring(0, builder->getTreeStringLength());
 }
 
-void printSuffixTreeDebugView(SuffixTreeBuilder * builder) {
-    std::cout << getRecursiveSuffixTreeVertexDebugView(builder, builder->getRoot(), 0);
+void addInterleafsPrefixLinkTest() {
+    SuffixTreeVertex * oldLeaf = new SuffixTreeVertex(0, 0),
+        * newLeaf = new SuffixTreeVertex(0, 0);
+    char prefixChar = 'c';
+
+    addInterleafsPrefixLink(oldLeaf, newLeaf, prefixChar);
+
+    assert(oldLeaf->getPrefixLinkedVertex(prefixChar) == newLeaf);
+    assert(newLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
 }
 
-std::string getRecursiveSuffixTreeVertexDebugView(SuffixTreeBuilder * builder, SuffixTreeVertex * vertex, int deep) {
-    std::string vertexSubstring = vertex->isRoot() ? "#ROOT#" : builder->getVertexSubstring(vertex);
-    std::string view = getFormatedSuffixTreeVertexDebugView(vertexSubstring, deep);
-    for (int i = 0; i < vertex->getChildren()->size(); ++i) {
-        SuffixTreeVertex * child = vertex->getChildren()->at(i);
-        view += getRecursiveSuffixTreeVertexDebugView(builder, child, deep + 1);
-    }
-    return view;
-}
+void addInterbranchesPrefixLinkIfPossibleTest() {
+    SuffixTreeBuilder * stb = createHelloWorldSuffixTreeBuilder();
+    SuffixTreeVertex * firstForkParent = new SuffixTreeVertex(0, 0),
+        * secondForkParent = new SuffixTreeVertex(0, 0),
+        * firstUniqueLeaf = new SuffixTreeVertex(0, 1),
+        * secondUniqueLeaf = new SuffixTreeVertex(0, 3),
+        * firstEqualLeaf = new SuffixTreeVertex(0, 5),
+        * secondEqualLeaf = new SuffixTreeVertex(0, 5);
+    firstForkParent->addChildRelation(firstUniqueLeaf);
+    firstForkParent->addChildRelation(firstEqualLeaf);
+    secondForkParent->addChildRelation(secondUniqueLeaf);
+    secondForkParent->addChildRelation(secondEqualLeaf);
 
-std::string getFormatedSuffixTreeVertexDebugView(std::string vertexSubstring, int deep) {
-    std::string view = "";
-    for (int i = 0; i < deep + 1; ++i) {
-        view += " | ";
-    }
-    view += "\n";
-    for (int i = 0; i < deep; ++i) {
-        view += " | ";
-    }
-    view += " |- ";
-    view += vertexSubstring;
-    view += " (deep : " + std::to_string(deep) + ")";
-    view += "\n";
-    return view;
+    char prefixChar = 'c';
+    addInterbranchesPrefixLinkIfPossible(stb, firstForkParent, secondForkParent, prefixChar);
+
+    assert(firstUniqueLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
+    assert(secondUniqueLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
+    assert(firstEqualLeaf->getPrefixLinkedVertex(prefixChar) == secondEqualLeaf);
+    assert(secondEqualLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
 }
