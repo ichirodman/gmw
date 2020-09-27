@@ -299,10 +299,10 @@ void handleNextSuffixAndGetNewLeafTest() {
     root->addChildRelation(firstBuiltVertex);
     root->addChildRelation(secondBuiltVertex);
 
-    auto thirdBuiltLeaf = handleNextSuffixAndGetNewLeaf(builder, secondBuiltVertex, 
-        suffixTreeString.substr(stringLength - 3, 3));
-    auto fourthBuiltLeaf = handleNextSuffixAndGetNewLeaf(builder, thirdBuiltLeaf, 
-        suffixTreeString.substr(stringLength - 4, 4));
+    std::string thirdLeafSubstring = suffixTreeString.substr(stringLength - 3, 3),
+        fourthLeafSubstring = suffixTreeString.substr(stringLength - 4, 4);
+    auto thirdBuiltLeaf = handleNextSuffixAndGetNewLeaf(builder, secondBuiltVertex, thirdLeafSubstring);
+    auto fourthBuiltLeaf = handleNextSuffixAndGetNewLeaf(builder, thirdBuiltLeaf, fourthLeafSubstring);
     
     assert(root->getChildren()->size() == 3);
 }

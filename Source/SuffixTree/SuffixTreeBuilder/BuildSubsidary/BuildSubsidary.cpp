@@ -5,7 +5,7 @@
 
 
 SuffixTreeVertex * handleNextSuffixAndGetNewLeaf(SuffixTreeBuilder * builder, SuffixTreeVertex * previousLeafVertex, 
-                                                 std::string nextSuffix) {
+                                                 std::string & nextSuffix) {
     using std::pair;
 
     char suffixPrefixChar = nextSuffix.at(0);
@@ -52,7 +52,7 @@ std::pair<SuffixTreeVertex *, std::string> goUpUntilFoundPrefixLink(SuffixTreeBu
 
 
 std::pair<SuffixTreeVertex *, std::string> goDownUntilSuffixSuperimposes(SuffixTreeBuilder * builder,
-                                                SuffixTreeVertex * currentVertex, std::string suffixString) {
+                                                SuffixTreeVertex * currentVertex, std::string & suffixString) {
     while (hasChildWithPrefixChar(builder, currentVertex, suffixString.at(0))) {
         SuffixTreeVertex * childTryToFollow = getChildWithPrefixChar(builder, currentVertex, suffixString.at(0));
         if (isVertexSubstringSuperimposesWithSuffix(builder, childTryToFollow, suffixString)) {
@@ -81,14 +81,14 @@ bool hasChildWithPrefixChar(SuffixTreeBuilder * builder, SuffixTreeVertex * pare
     return getChildWithPrefixChar(builder, parent, prefixChar) != nullptr;
 }
 
-bool isVertexSubstringSuperimposesWithSuffix(SuffixTreeBuilder * builder, SuffixTreeVertex * vertex, std::string suffixString) {
+bool isVertexSubstringSuperimposesWithSuffix(SuffixTreeBuilder * builder, SuffixTreeVertex * vertex, std::string & suffixString) {
     std::string vertexSubstring = builder->getVertexSubstring(vertex);
     return suffixString.length() >= vertexSubstring.length() && 
         suffixString.substr(0, vertexSubstring.length()) == vertexSubstring;
 }
 
 SuffixTreeVertex * forkBranchAndGetNewLeaf(SuffixTreeBuilder * builder, SuffixTreeVertex * closestExistingVertex, 
-                                           std::string suffixString) {
+                                           std::string & suffixString) {
     char firstSuffixChar = suffixString.at(0);
     if (hasChildWithPrefixChar(builder, closestExistingVertex, firstSuffixChar)) {
         closestExistingVertex = splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertex(builder, closestExistingVertex, suffixString);
@@ -100,7 +100,7 @@ SuffixTreeVertex * forkBranchAndGetNewLeaf(SuffixTreeBuilder * builder, SuffixTr
 }
 
 
-SuffixTreeVertex * splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertex(SuffixTreeBuilder * builder, SuffixTreeVertex * branchParent, std::string suffixString) {
+SuffixTreeVertex * splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertex(SuffixTreeBuilder * builder, SuffixTreeVertex * branchParent, std::string & suffixString) {
     SuffixTreeVertex * branchChild = getChildWithPrefixChar(builder, branchParent, suffixString.at(0));
     std::string branchString = builder->getVertexSubstring(branchChild);
     int suffixAndBranchStringsOverlayLength = getOverlayLength(suffixString, branchString);
@@ -119,20 +119,20 @@ void buildInIntermediary(SuffixTreeVertex * parent, SuffixTreeVertex * child, Su
     intermediary->addChildRelation(child);
 }
 
-int getOverlayLength(std::string first, std::string second) {
+int getOverlayLength(std::string & first, std::string & second) {
     int overlayLength = 0;
     for (; overlayLength < first.length() && overlayLength < second.length() 
         && first.at(overlayLength) == second.at(overlayLength); ++overlayLength);
     return overlayLength;
 }
 
-SuffixTreeVertex * addLeafToVertex(SuffixTreeBuilder * builder, SuffixTreeVertex * newLeafParent, std::string suffixString) {
+SuffixTreeVertex * addLeafToVertex(SuffixTreeBuilder * builder, SuffixTreeVertex * newLeafParent, std::string & suffixString) {
     SuffixTreeVertex * newLeaf = createIndependentLeafVertex(builder, suffixString);
     newLeafParent->addChildRelation(newLeaf);
     return newLeaf;
 }
 
-SuffixTreeVertex * createIndependentLeafVertex(SuffixTreeBuilder * builder, std::string suffixString) {
+SuffixTreeVertex * createIndependentLeafVertex(SuffixTreeBuilder * builder, std::string & suffixString) {
     int suffixEntryIndex = builder->getTreeStringLength() - suffixString.length();
     SuffixTreeVertex * independentVertex = new SuffixTreeVertex(suffixEntryIndex, suffixString.length());
     return independentVertex;
@@ -155,6 +155,7 @@ void addInterbranchesPrefixLinkIfPossible(SuffixTreeBuilder * builder, SuffixTre
                 if (builder->getVertexSubstring(oldBranchParentChild) == builder->getVertexSubstring(newBranchParentChild) &&
                     oldBranchParentChild->getPrefixLinkedVertex(prefixLinkChar) == nullptr) {
                     oldBranchParentChild->addPrefixLinkedVertex(newBranchParentChild, prefixLinkChar);
+                    std::cout << "ADDED" << std::endl;
                 }
             }
         }

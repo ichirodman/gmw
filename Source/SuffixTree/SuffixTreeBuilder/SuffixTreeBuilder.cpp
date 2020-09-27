@@ -48,9 +48,9 @@ void SuffixTreeBuilder::printDebugView() {
 void SuffixTreeBuilder::build() {
     SuffixTreeVertex * lastLeafBuiltVertex = const_cast<SuffixTreeVertex *>(this->getRoot());
     for (int i = 1, lastPercent = 0, stringLength = this->suffixTreeString.length(); i <= stringLength; ++i) {
-        if (i * 100.0 / (stringLength * 0.995) > lastPercent) {
+        if (i * 100.0 / (stringLength * 0.995) - 1 > lastPercent) {
+            lastPercent = static_cast<int>(i * 100.0 / (stringLength * 0.995));
             std::cout << "BUILDING SUFFIX TREE : " << lastPercent << "% done" << std::endl;
-            lastPercent++;
         }
         std::string nextSuffix = this->getSuffixTreeSubstring(stringLength - i, i);
         // std::cout << "Next suffix: " << nextSuffix << std::endl;
