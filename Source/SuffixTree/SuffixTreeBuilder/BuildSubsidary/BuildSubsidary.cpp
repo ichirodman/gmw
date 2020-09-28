@@ -32,7 +32,7 @@ SuffixTreeVertex * handleNextSuffixAndGetNewLeaf(SuffixTreeBuilder * builder, Su
 
     SuffixTreeVertex * newLeaf = forkBranchAndGetNewLeaf(builder, buildInPlaceVertex, suffixString);
 
-    goUpTheBranchesAndAddPrefixLinksIfNecessary(builder, previousLeafVertex, newLeaf, suffixPrefixChar);
+    // goUpTheBranchesAndAddPrefixLinksIfNecessary(builder, previousLeafVertex, newLeaf, suffixPrefixChar);
     
     return newLeaf;
 }
