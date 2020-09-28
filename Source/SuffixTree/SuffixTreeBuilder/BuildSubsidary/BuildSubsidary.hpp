@@ -31,10 +31,7 @@ SuffixTreeVertex * addLeafToVertex(SuffixTreeBuilder *, SuffixTreeVertex *, std:
 
 SuffixTreeVertex * createIndependentLeafVertex(SuffixTreeBuilder *, std::string &);
 
-void addInterleafsPrefixLink(SuffixTreeVertex * oldLeaf, SuffixTreeVertex * newLeaf, char prefixLinkChar);
-
-void addInterbranchesPrefixLinkIfPossible(SuffixTreeBuilder * builder, SuffixTreeVertex * oldBranchVertexWithPrefixLeaf, 
-                                          SuffixTreeVertex * newBranchPrefixLinkedVertex, char prefixLinkChar);
-
+void goUpTheBranchesAndAddPrefixLinksIfNecessary(SuffixTreeBuilder * builder, 
+    SuffixTreeVertex * oldLeaf, SuffixTreeVertex * newLeaf, char prefixChar);
 
 #endif

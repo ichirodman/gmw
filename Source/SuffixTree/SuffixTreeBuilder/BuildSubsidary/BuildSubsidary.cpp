@@ -32,8 +32,7 @@ SuffixTreeVertex * handleNextSuffixAndGetNewLeaf(SuffixTreeBuilder * builder, Su
 
     SuffixTreeVertex * newLeaf = forkBranchAndGetNewLeaf(builder, buildInPlaceVertex, suffixString);
 
-    addInterleafsPrefixLink(previousLeafVertex, newLeaf, suffixPrefixChar);
-    addInterbranchesPrefixLinkIfPossible(builder, previousBranchVertexWithPrefixLink, nextBranchPrefixLinkedVertex, suffixPrefixChar);
+    goUpTheBranchesAndAddPrefixLinksIfNecessary(builder, previousLeafVertex, newLeaf, suffixPrefixChar);
     
     return newLeaf;
 }
@@ -46,7 +45,7 @@ std::pair<SuffixTreeVertex *, std::string> goUpUntilFoundPrefixLink(SuffixTreeBu
     }
     if (vertex->isRoot()) {
         restoredSuffixWhileGoUp = prefixLinkedChar + restoredSuffixWhileGoUp;
-    }
+    } 
     return { vertex, restoredSuffixWhileGoUp };
 }
 
@@ -138,26 +137,37 @@ SuffixTreeVertex * createIndependentLeafVertex(SuffixTreeBuilder * builder, std:
     return independentVertex;
 }
 
-void addInterleafsPrefixLink(SuffixTreeVertex * oldLeaf, SuffixTreeVertex * newLeaf, char prefixLinkChar) {
-    oldLeaf->addPrefixLinkedVertex(newLeaf, prefixLinkChar);
-}
 
-
-void addInterbranchesPrefixLinkIfPossible(SuffixTreeBuilder * builder, SuffixTreeVertex * oldBranchVertexWithPrefixLeaf, 
-                                          SuffixTreeVertex * newBranchPrefixLinkedVertex, char prefixLinkChar) {
-    if (oldBranchVertexWithPrefixLeaf == newBranchPrefixLinkedVertex) {
+void goUpTheBranchesAndAddPrefixLinksIfNecessary(SuffixTreeBuilder * builder, 
+    SuffixTreeVertex * oldLeaf, SuffixTreeVertex * newLeaf, char prefixChar) {
+    SuffixTreeVertex * newLeafBreakVertex;
+    if (newLeaf->getParent() == nullptr || newLeaf->getParent()->getParent() == nullptr) {
         return;
     } else {
-        for (int i = 0; i < oldBranchVertexWithPrefixLeaf->getChildren()->size(); ++i) {
-            SuffixTreeVertex * oldBranchParentChild = oldBranchVertexWithPrefixLeaf->getChildren()->at(i);
-            for (int j = 0; j < newBranchPrefixLinkedVertex->getChildren()->size(); ++j) {
-                SuffixTreeVertex * newBranchParentChild = newBranchPrefixLinkedVertex->getChildren()->at(j);
-                if (builder->getVertexSubstring(oldBranchParentChild) == builder->getVertexSubstring(newBranchParentChild) &&
-                    oldBranchParentChild->getPrefixLinkedVertex(prefixLinkChar) == nullptr) {
-                    oldBranchParentChild->addPrefixLinkedVertex(newBranchParentChild, prefixLinkChar);
-                    std::cout << "ADDED" << std::endl;
-                }
+        newLeafBreakVertex = newLeaf->getParent()->getParent();
+    }
+    for(std::string oldBranchRestoredString = "", newBranchRestoredString = "";;) {
+        if (newLeaf == newLeafBreakVertex) {
+                return;
+        } else if (oldBranchRestoredString.length() < newBranchRestoredString.length() || oldBranchRestoredString == "") {
+            if (oldLeaf->isRoot()) {
+                break;
+            } else {
+                oldBranchRestoredString.insert(0, builder->getVertexSubstring(oldLeaf));
+                oldLeaf = oldLeaf->getParent();
             }
+        } else if (oldBranchRestoredString.length() > newBranchRestoredString.length()) {
+            newBranchRestoredString.insert(0, builder->getVertexSubstring(newLeaf));
+            newLeaf = newLeaf->getParent();
+        } else {
+            if (oldBranchRestoredString == newBranchRestoredString && 
+                    oldLeaf->getPrefixLinkedVertex(prefixChar) == nullptr) {
+                oldLeaf->addPrefixLinkedVertex(newLeaf, prefixChar);
+                // std::cout << "ADDED" << std::endl;
+                // std::cout << oldBranchRestoredString << " " << newBranchRestoredString << std::endl;
+            }
+            newBranchRestoredString.insert(0, builder->getVertexSubstring(newLeaf));
+            newLeaf = newLeaf->getParent();
         }
     }
 }

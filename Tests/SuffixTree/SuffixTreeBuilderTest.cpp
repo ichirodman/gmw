@@ -25,9 +25,7 @@ void goDownUntilSuffixSuperimposesTest();
 
 void addLeafToVertexTest();
 
-void addInterleafsPrefixLinkTest();
-
-void addInterbranchesPrefixLinkIfPossibleTest();
+void goUpTheBranchesAndAddPrefixLinksIfNecessaryTest();
 
 void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest();
 
@@ -53,8 +51,7 @@ int main() {
     goUpUntilFoundPrefixLinkTest();
     goDownUntilSuffixSuperimposesTest();
     addLeafToVertexTest();
-    addInterleafsPrefixLinkTest();
-    addInterbranchesPrefixLinkIfPossibleTest();
+    goUpTheBranchesAndAddPrefixLinksIfNecessaryTest();
     splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest();
     forkBranchAndGetNewLeafTest();
     handleNextSuffixAndGetNewLeafTest();
@@ -235,6 +232,28 @@ void addLeafToVertexTest() {
     assert(newLeaf->getInfo().first == entryIndex && newLeaf->getInfo().second == suffixLength);
 }
 
+void goUpTheBranchesAndAddPrefixLinksIfNecessaryTest() {
+    SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
+    SuffixTreeVertex * firstBranchFirstVertex = new SuffixTreeVertex(0, 1),
+        * firstBranchSecondVertex = new SuffixTreeVertex(1, 3),
+        * secondBranchFirstVertex = new SuffixTreeVertex(0, 1),
+        * secondBranchSecondVertex = new SuffixTreeVertex(1, 2),
+        * secondBranchThirdVertex = new SuffixTreeVertex(3, 1),
+        * root = builder->getRoot();
+    root->addChildRelation(firstBranchFirstVertex);
+    firstBranchFirstVertex->addChildRelation(firstBranchSecondVertex);
+    root->addChildRelation(secondBranchFirstVertex);
+    secondBranchFirstVertex->addChildRelation(secondBranchSecondVertex);
+    secondBranchSecondVertex->addChildRelation(secondBranchThirdVertex);
+
+    char prefixChar = 'c';
+    goUpTheBranchesAndAddPrefixLinksIfNecessary(builder, secondBranchThirdVertex, firstBranchSecondVertex, prefixChar);
+
+    assert(secondBranchFirstVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
+    assert(secondBranchSecondVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
+    assert(secondBranchThirdVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
+}
+
 void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest() {
     SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
     std::string suffixTreeString = getSuffixTreeBuilderString(builder);
@@ -325,37 +344,4 @@ SuffixTreeBuilder * createHelloWorldSuffixTreeBuilder() {
 
 std::string getSuffixTreeBuilderString(SuffixTreeBuilder * builder) {
     return builder->getSuffixTreeSubstring(0, builder->getTreeStringLength());
-}
-
-void addInterleafsPrefixLinkTest() {
-    SuffixTreeVertex * oldLeaf = new SuffixTreeVertex(0, 0),
-        * newLeaf = new SuffixTreeVertex(0, 0);
-    char prefixChar = 'c';
-
-    addInterleafsPrefixLink(oldLeaf, newLeaf, prefixChar);
-
-    assert(oldLeaf->getPrefixLinkedVertex(prefixChar) == newLeaf);
-    assert(newLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
-}
-
-void addInterbranchesPrefixLinkIfPossibleTest() {
-    SuffixTreeBuilder * stb = createHelloWorldSuffixTreeBuilder();
-    SuffixTreeVertex * firstForkParent = new SuffixTreeVertex(0, 0),
-        * secondForkParent = new SuffixTreeVertex(0, 0),
-        * firstUniqueLeaf = new SuffixTreeVertex(0, 1),
-        * secondUniqueLeaf = new SuffixTreeVertex(0, 3),
-        * firstEqualLeaf = new SuffixTreeVertex(0, 5),
-        * secondEqualLeaf = new SuffixTreeVertex(0, 5);
-    firstForkParent->addChildRelation(firstUniqueLeaf);
-    firstForkParent->addChildRelation(firstEqualLeaf);
-    secondForkParent->addChildRelation(secondUniqueLeaf);
-    secondForkParent->addChildRelation(secondEqualLeaf);
-
-    char prefixChar = 'c';
-    addInterbranchesPrefixLinkIfPossible(stb, firstForkParent, secondForkParent, prefixChar);
-
-    assert(firstUniqueLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
-    assert(secondUniqueLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
-    assert(firstEqualLeaf->getPrefixLinkedVertex(prefixChar) == secondEqualLeaf);
-    assert(secondEqualLeaf->getPrefixLinkedVertex(prefixChar) == nullptr);
 }
