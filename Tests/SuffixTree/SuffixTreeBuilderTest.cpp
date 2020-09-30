@@ -249,9 +249,12 @@ void goUpTheBranchesAndAddPrefixLinksIfNecessaryTest() {
     char prefixChar = 'c';
     goUpTheBranchesAndAddPrefixLinksIfNecessary(builder, secondBranchThirdVertex, firstBranchSecondVertex, prefixChar);
 
-    assert(secondBranchFirstVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
+    assert(secondBranchFirstVertex->getPrefixLinkedVertex(prefixChar) == firstBranchFirstVertex);
     assert(secondBranchSecondVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
     assert(secondBranchThirdVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
+    assert(firstBranchFirstVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
+    assert(firstBranchSecondVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
+
 }
 
 void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest() {

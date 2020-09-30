@@ -1,35 +1,29 @@
-CC = g++
+CC = g++ -std=gnu++0x
 
-MAIN_ALGO_FILE=Source/main.cpp
+MAIN_ALGO_FILE = main.cpp
+MAIN_OUTPUT_FILE = main_bin.exe
 
-UTILS_FILES=$(shell find ./Source/Utils -name "*.cpp")
+SOURCE_DIRNAME = Source
+TEST_DIRNAME = Tests
+SUFFIX_TREE_TESTS_DIR := $(TEST_DIRNAME)/SuffixTree
 
-SUFFIX_TREE_SOURCE_FILES=$(shell find ./Source/SuffixTree -name "*.cpp")
+UTILS_FILES = $(shell find ./$(SOURCE_DIRNAME)/Utils -name "*.cpp")
+SUFFIX_TREE_SOURCE_FILES = $(shell find ./$(SOURCE_DIRNAME)/SuffixTree -name "*.cpp")
 
-SUFFIX_TREE_TEST_FILES=Tests/SuffixTree/SuffixTreeTest.cpp
-SUFFIX_TREE_VERTEX_TEST_FILES=Tests/SuffixTree/SuffixTreeVertexTest.cpp
-SUFFIX_TREE_BUILDER_TEST_FILES=Tests/SuffixTree/SuffixTreeBuilderTest.cpp
-
-OUTPUT_BIN=LastCompilationBin
+SUFFIX_TREE_TESTS := $(addprefix $(SUFFIX_TREE_TESTS_DIR)/, SuffixTreeTest.exe SuffixTreeVertexTest.exe SuffixTreeBuilderTest.exe)
 
 
 all:
-	$(CC) $(MAIN_ALGO_FILE) $(UTILS_FILES) $(SUFFIX_TREE_SOURCE_FILES) -o $(OUTPUT_BIN); ./$(OUTPUT_BIN)
+	$(CC) ./$(SOURCE_DIRNAME)/$(MAIN_ALGO_FILE) \
+	$(UTILS_FILES) $(SUFFIX_TREE_SOURCE_FILES) \
+	-o $(SOURCE_DIRNAME)/$(MAIN_OUTPUT_FILE) && ./$(SOURCE_DIRNAME)/$(MAIN_OUTPUT_FILE)
 
-tests: suffix_tree_test suffix_tree_builder_test suffix_tree_vertex_test
+$(SUFFIX_TREE_TESTS_DIR)/%.exe : $(SUFFIX_TREE_TESTS_DIR)/%.cpp
+	$(CC) $< $(SUFFIX_TREE_SOURCE_FILES) -o $@ && ./$@
 
-suffix_tree_test:
-	$(CC) $(SUFFIX_TREE_TEST_FILES) $(SUFFIX_TREE_SOURCE_FILES) -o $(OUTPUT_BIN); ./$(OUTPUT_BIN)
-
-suffix_tree_builder_test:
-	$(CC) $(SUFFIX_TREE_BUILDER_TEST_FILES) $(SUFFIX_TREE_SOURCE_FILES) -o $(OUTPUT_BIN); ./$(OUTPUT_BIN)
-
-suffix_tree_vertex_test:
-	$(CC) $(SUFFIX_TREE_VERTEX_TEST_FILES) $(SUFFIX_TREE_SOURCE_FILES) -o $(OUTPUT_BIN); ./$(OUTPUT_BIN)
-
-$(OUTPUT_BIN): $(SUFFIX_TREE_TEST_FILES)
+suffix_tree_tests: $(SUFFIX_TREE_TESTS)
 
 clean:
-	@rm $(OUTPUT_BIN)
+	@rm $(shell find . -name "*.exe")
 
-.PHONY: all tests
+.PHONY: all suffix_tree_tests
