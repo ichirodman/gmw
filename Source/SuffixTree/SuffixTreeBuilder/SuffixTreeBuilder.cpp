@@ -72,14 +72,14 @@ void saveRecursiveSuffixTreeVertexDebugView(SuffixTreeBuilder * builder, SuffixT
 
 std::string getFormatedSuffixTreeVertexDebugView(std::string vertexSubstring, int deep) {
     std::string view = "";
-    for (int i = 0; i < deep + 1; ++i) {
-        view += " | ";
-    }
-    view += "\n";
     for (int i = 0; i < deep; ++i) {
         view += " | ";
     }
-    view += " |- ";
+    view += "\n";
+    for (int i = 0; i < deep - 1; ++i) {
+        view += " | ";
+    }
+    view += deep > 0 ? " |- " : " ";
     view += vertexSubstring;
     view += " (deep : " + std::to_string(deep) + ")";
     view += "\n";
