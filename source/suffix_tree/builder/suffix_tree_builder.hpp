@@ -3,7 +3,7 @@
 
 
 #include <string>
-#include "SuffixTreeVertex/SuffixTreeVertex.hpp"
+#include "vertex/suffix_tree_vertex.hpp"
 
 
 class SuffixTreeBuilder {

@@ -1,6 +1,6 @@
-#include "SuffixTreeBuilder.hpp"
-#include "SuffixTreeVertex/SuffixTreeVertex.hpp"
-#include "BuildSubsidary/BuildSubsidary.hpp"
+#include "suffix_tree_builder.hpp"
+#include "vertex/suffix_tree_vertex.hpp"
+#include "subsidary/subsidary.hpp"
 #include <string>
 #include <iostream>
 

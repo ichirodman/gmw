@@ -3,8 +3,8 @@
 
 
 #include <string>
-#include "SuffixTreeBuilder/SuffixTreeBuilder.hpp"
-#include "SuffixTreeBuilder/SuffixTreeVertex/SuffixTreeVertex.hpp"
+#include "builder/suffix_tree_builder.hpp"
+#include "builder/vertex/suffix_tree_vertex.hpp"
 
 
 class SuffixTree {

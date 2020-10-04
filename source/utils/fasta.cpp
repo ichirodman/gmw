@@ -1,12 +1,12 @@
-#include "Fasta.h"
+#include "fasta.hpp"
 #include <fstream>
 #include <iostream>
 
 FastaFileContent::FastaFileContent(std::string filename) : filename(filename)
 {
     std::string line;
-    std::ifstream in("./Data/" + filename);
-    std::cout << "FILENAME: " << "../Data/" + filename << std::endl;
+    std::ifstream in("./data/" + filename);
+    std::cout << "FILENAME: " << "../data/" + filename << std::endl;
     if (in.is_open())
     {
         while (getline(in, line))

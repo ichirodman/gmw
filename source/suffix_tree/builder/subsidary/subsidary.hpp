@@ -2,9 +2,9 @@
 #define BUILD_SUBSIDARY_FUNCTIONS
 
 
-#include "../../SuffixTree.hpp"
-#include "../SuffixTreeBuilder.hpp"
-#include "../SuffixTreeVertex/SuffixTreeVertex.hpp"
+#include "../../suffix_tree.hpp"
+#include "../suffix_tree_builder.hpp"
+#include "../vertex/suffix_tree_vertex.hpp"
 
 
 SuffixTreeVertex * handleNextSuffixAndGetNewLeaf(SuffixTreeBuilder *, SuffixTreeVertex *, std::string &);

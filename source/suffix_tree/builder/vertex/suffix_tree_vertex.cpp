@@ -1,4 +1,4 @@
-#include "SuffixTreeVertex.hpp"
+#include "suffix_tree_vertex.hpp"
 
 
 SuffixTreeVertex::SuffixTreeVertex(int entryIndex, int substringLength) 

@@ -1,6 +1,6 @@
-#include "Utils/Fasta.h"
-#include "Utils/CodeTiming.hpp"
-#include "SuffixTree/SuffixTreeBuilder/SuffixTreeBuilder.hpp"
+#include "utils/fasta.hpp"
+#include "utils/code_timing.hpp"
+#include "suffix_tree/builder/suffix_tree_builder.hpp"
 #include <iostream>
 
 

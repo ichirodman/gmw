@@ -1,5 +1,5 @@
-#include "../../Source/SuffixTree/SuffixTreeBuilder/SuffixTreeBuilder.hpp"
-#include "../../Source/SuffixTree/SuffixTreeBuilder/BuildSubsidary/BuildSubsidary.hpp"
+#include "../../source/suffix_tree/builder/suffix_tree_builder.hpp"
+#include "../../source/suffix_tree/builder/subsidary/subsidary.hpp"
 #include <assert.h>
 
 

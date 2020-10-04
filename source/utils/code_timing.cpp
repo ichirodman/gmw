@@ -1,4 +1,4 @@
-#include "CodeTiming.hpp"
+#include "code_timing.hpp"
 
 #include <iostream>
 #include <ctime>
