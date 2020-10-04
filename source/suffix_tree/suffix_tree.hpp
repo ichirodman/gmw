@@ -5,7 +5,7 @@
 #include <string>
 #include "builder/suffix_tree_builder.hpp"
 #include "builder/vertex/suffix_tree_vertex.hpp"
-
+#include <vector>
 
 class SuffixTree {
 public:
@@ -13,7 +13,7 @@ public:
 	
 	~SuffixTree();
 
-	int getEntryIndex(std::string);
+	std::vector<int> * getEntryIndexes(std::string);
 
 private:
 	SuffixTreeBuilder * builder;

@@ -52,7 +52,7 @@ std::pair<SuffixTreeVertex *, std::string> goUpUntilFoundPrefixLink(SuffixTreeBu
 
 std::pair<SuffixTreeVertex *, std::string> goDownUntilSuffixSuperimposes(SuffixTreeBuilder * builder,
                                                 SuffixTreeVertex * currentVertex, std::string & suffixString) {
-    while (hasChildWithPrefixChar(builder, currentVertex, suffixString.at(0))) {
+    while (suffixString.length() > 0 && hasChildWithPrefixChar(builder, currentVertex, suffixString.at(0))) {
         SuffixTreeVertex * childTryToFollow = getChildWithPrefixChar(builder, currentVertex, suffixString.at(0));
         if (isVertexSubstringSuperimposesWithSuffix(builder, childTryToFollow, suffixString)) {
             std::string childSubstring = builder->getVertexSubstring(childTryToFollow);
