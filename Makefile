@@ -19,19 +19,19 @@ SUFFIX_TREE_TESTS := $(addprefix $(SUFFIX_TREE_TESTS_DIR)/, $(addsuffix .exe, \
 	$(shell find ./$(SUFFIX_TREE_TESTS_DIR) -iname "*.cpp" -execdir basename {} .cpp ';')))
 
 
-all: suffix_tree_tests algo
+all: suffix_tree_tests main
 
 $(MAIN_BIN_FILE) : $(ALL_SOURCE_FILES)
-	@$(CC) $(ALL_SOURCE_FILES) -o $@
+	@$(CC) $^ -o $@
 
 $(SUFFIX_TREE_TESTS_DIR)/%.exe : $(SUFFIX_TREE_TESTS_DIR)/%.cpp $(SUFFIX_TREE_SOURCE_FILES)
-	$(CC) $< $(SUFFIX_TREE_SOURCE_FILES) -o $@
+	@$(CC) $^ -o $@
 
-algo : $(MAIN_BIN_FILE)
-	@./$<
+main : $(MAIN_BIN_FILE)
+	@./$^
 
 suffix_tree_tests: $(SUFFIX_TREE_TESTS)
-	$(addsuffix ;, $(addprefix ./, $(SUFFIX_TREE_TESTS)))
+	@$(addsuffix $() &&, $(addprefix ./, $(SUFFIX_TREE_TESTS))) echo "Finished tests";
 
 clean:
 	@rm $(SUFFIX_TREE_TESTS_DIR)/*.exe $(MAIN_BIN_FILE)
