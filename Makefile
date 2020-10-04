@@ -4,17 +4,19 @@ MAIN_ALGO_FILE = main.cpp
 MAIN_BIN_FILE = main_bin.exe
 
 SOURCE_DIRNAME = source
+UTILS_DIR := $(SOURCE_DIRNAME)/utils
+SUFFIX_TREE_DIR := $(SOURCE_DIRNAME)/suffix_tree
+
 TEST_DIRNAME = tests
 SUFFIX_TREE_TESTS_DIR := $(TEST_DIRNAME)/suffix_tree
 
-UTILS_FILES = $(shell find ./$(SOURCE_DIRNAME)/utils -name "*.cpp")
-SUFFIX_TREE_SOURCE_FILES = $(shell find ./$(SOURCE_DIRNAME)/suffix_tree -name "*.cpp")
+UTILS_FILES := $(shell find ./$(UTILS_DIR) -name "*.cpp")
+SUFFIX_TREE_SOURCE_FILES := $(shell find ./$(SUFFIX_TREE_DIR) -name "*.cpp")
 
 ALL_SOURCE_FILES := $(shell find ./$(SOURCE_DIRNAME) -name "*.cpp")
 
-SUFFIX_TREE_TESTS := $(addprefix $(SUFFIX_TREE_TESTS_DIR)/, \
-	$(addsuffix .exe, \
-		$(shell find ./$(SUFFIX_TREE_TESTS_DIR) -iname "*.cpp" -execdir basename {} .cpp ';')))
+SUFFIX_TREE_TESTS := $(addprefix $(SUFFIX_TREE_TESTS_DIR)/, $(addsuffix .exe, \
+	$(shell find ./$(SUFFIX_TREE_TESTS_DIR) -iname "*.cpp" -execdir basename {} .cpp ';')))
 
 
 all: suffix_tree_tests algo
