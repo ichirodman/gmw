@@ -7,6 +7,7 @@
 #include "builder/vertex/suffix_tree_vertex.hpp"
 #include <vector>
 
+
 class SuffixTree {
 public:
 	SuffixTree(const std::string &);
