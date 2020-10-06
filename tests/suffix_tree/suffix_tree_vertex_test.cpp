@@ -8,9 +8,7 @@ void childAddTest();
 
 void removeChildTest();
 
-void addPrefixLinkedVertex();
-
-void getPrefixLinkedVertex();
+void addAndGetPrefixLinkedVertex();
 
 void parentSetTest();
 
@@ -24,8 +22,7 @@ int main() {
 	updateInfoTest();
 	childAddTest();
 	removeChildTest();
-	addPrefixLinkedVertex();
-	getPrefixLinkedVertex();	
+	addAndGetPrefixLinkedVertex();
 	parentSetTest();
 	parentSetTest();
 	rootClassificationTest();
@@ -33,91 +30,97 @@ int main() {
 	return 0;
 }
 
+SuffixTreeVertex * createEmptyVertex();
+
 void updateInfoTest() {
 	int entryIndex = 1, substringLength = 3;
 	SuffixTreeVertex * vertex = new SuffixTreeVertex(entryIndex, substringLength);
 	
 	assert(vertex->getInfo().first == entryIndex && vertex->getInfo().second == substringLength);
+
+	delete vertex;
 }
 
 void childAddTest() {
-	SuffixTreeVertex * parent = new SuffixTreeVertex(0, 0),
-		* child = new SuffixTreeVertex(0, 0);
+	SuffixTreeVertex * parent = createEmptyVertex(),
+		* child = createEmptyVertex();
 	
 	parent->addChildRelation(child);
 	
 	assert(parent->getChildren()->size() == 1);
 	assert(parent->getChildren()->at(0) == child);
+
+	delete parent;
 }
 
 template <typename T>
 bool isElementExist(std::vector<T *> * v, T * elem);
 
 void removeChildTest() {
-	SuffixTreeVertex * parent = new SuffixTreeVertex(0, 0),
-		* child1 = new SuffixTreeVertex(0, 0), 
-		* child2 = new SuffixTreeVertex(0, 0),
-		* child3 = new SuffixTreeVertex(0, 0);
+	SuffixTreeVertex * parent = createEmptyVertex(),
+		* child1 = createEmptyVertex(), 
+		* child2 = createEmptyVertex(),
+		* child3 = createEmptyVertex();
 	
 	parent->addChildRelation(child1);
 	parent->addChildRelation(child2);
 	parent->addChildRelation(child3);
 	parent->removeChildRelation(child2);
 
-	auto * children = parent->getChildren();
 	assert(parent->getChildren()->size() == 2);
-	assert(isElementExist(children, child1));
-	assert(isElementExist(children, child3));
-	assert(!isElementExist(children, child2));
+	assert(isElementExist(parent->getChildren(), child1));
+	assert(isElementExist(parent->getChildren(), child3));
+	assert(!isElementExist(parent->getChildren(), child2));
+
+	delete parent, child2;
 }
 
-void addPrefixLinkedVertex() {
-	SuffixTreeVertex * independentVertex = new SuffixTreeVertex(0, 0),
-		* prefixLinkedVertex = new SuffixTreeVertex(0, 0);
+void addAndGetPrefixLinkedVertex() {
+	SuffixTreeVertex * independentVertex = createEmptyVertex(),
+		* prefixLinkedVertex = createEmptyVertex();
 	char prefixLink = 'c';
 
 	independentVertex->addPrefixLinkedVertex(prefixLinkedVertex, prefixLink);
 
 	assert(independentVertex->hasPrefixLinkedVertex(prefixLink));
-}
-
-void getPrefixLinkedVertex() {
-	SuffixTreeVertex * independentVertex = new SuffixTreeVertex(0, 0),
-		* prefixLinkedVertex = new SuffixTreeVertex(0, 0);
-	char prefixLink = 'c';
-
-	independentVertex->addPrefixLinkedVertex(prefixLinkedVertex, prefixLink);
-
 	assert(independentVertex->getPrefixLinkedVertex(prefixLink) == prefixLinkedVertex);
+
+	delete independentVertex, prefixLinkedVertex;
 }
 
 void parentSetTest() {
-	SuffixTreeVertex * parent = new SuffixTreeVertex(0, 0),
-		* child = new SuffixTreeVertex(0, 0);
+	SuffixTreeVertex * parent = createEmptyVertex(),
+		* child = createEmptyVertex();
 	
 	parent->addChildRelation(child);
 	
 	assert(child->getParent() == parent);
+
+	delete parent;
 }
 
 void rootClassificationTest() {
-	SuffixTreeVertex * rootVertex = new SuffixTreeVertex(0, 0),
-		* leafVertex = new SuffixTreeVertex(0, 0);
+	SuffixTreeVertex * rootVertex = createEmptyVertex(),
+		* leafVertex = createEmptyVertex();
 
 	rootVertex->addChildRelation(leafVertex);
 
 	assert(rootVertex->isRoot());
 	assert(!leafVertex->isRoot());
+
+	delete rootVertex;
 }
 
 void leafClassificationTest() {
-	SuffixTreeVertex * rootVertex = new SuffixTreeVertex(0, 0),
-		* leafVertex = new SuffixTreeVertex(0, 0);
+	SuffixTreeVertex * rootVertex = createEmptyVertex(),
+		* leafVertex = createEmptyVertex();
 
 	rootVertex->addChildRelation(leafVertex);
 
 	assert(leafVertex->isLeaf());
 	assert(!leafVertex->isRoot());
+
+	delete rootVertex, leafVertex;
 }
 
 template <typename T>
@@ -128,4 +131,8 @@ bool isElementExist(std::vector<T *> * v, T * elem) {
 		}
 	}
 	return false;
+}
+
+SuffixTreeVertex * createEmptyVertex() {
+	return new SuffixTreeVertex(0, 0);
 }
