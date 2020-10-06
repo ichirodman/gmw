@@ -9,7 +9,9 @@ SuffixTreeVertex::SuffixTreeVertex(int entryIndex, int substringLength)
 }
 
 SuffixTreeVertex::~SuffixTreeVertex() {
-	delete this->children;
+	for (int i = 0; i < this->children->size(); ++i) {
+		delete this->children->at(i);
+	}
 }
 
 void SuffixTreeVertex::updateInfo(int entryIndex, int substringLength) {

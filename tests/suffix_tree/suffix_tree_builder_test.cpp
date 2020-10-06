@@ -1,19 +1,14 @@
+#include "../../source/suffix_tree/builder/vertex/suffix_tree_vertex.hpp"
 #include "../../source/suffix_tree/builder/suffix_tree_builder.hpp"
 #include "../../source/suffix_tree/builder/subsidary/subsidary.hpp"
 #include <assert.h>
 
 
-void getRootTest();
-
 void getVertexSubstringTest();
-
-void getOverlayLengthTest();
 
 void buildInIntermediaryTest();
 
 void createIndependentLeafVertexTest();
-
-void hasChildWithPrefixCharTest();
 
 void getChildWithPrefixCharTest();
 
@@ -35,17 +30,9 @@ void handleNextSuffixAndGetNewLeafTest();
 
 void buildTest();
 
-SuffixTreeBuilder * createHelloWorldSuffixTreeBuilder();
-
-std::string getSuffixTreeBuilderString(SuffixTreeBuilder *);
-
 int main() {
-    getRootTest();
-    getVertexSubstringTest();
-    getOverlayLengthTest();
     buildInIntermediaryTest();
     createIndependentLeafVertexTest();
-    hasChildWithPrefixCharTest();
     getChildWithPrefixCharTest();
     isVertexSubstringSuperimposesWithSuffixTest();
     goUpUntilFoundPrefixLinkTest();
@@ -59,50 +46,16 @@ int main() {
     return 0;
 }
 
-void getRootTest() {
-    const std::string sts = "ABABABABA";
-    SuffixTreeBuilder * stb = new SuffixTreeBuilder(sts);
+SuffixTreeBuilder * createHelloWorldSuffixTreeBuilder();
 
-    assert(stb->getRoot() != nullptr);
+SuffixTreeVertex * createEmptyVertex();
 
-    delete stb;
-}
-
-void getVertexSubstringTest() {
-    std::string sts = "abracadabra";
-    SuffixTreeBuilder * stb = new SuffixTreeBuilder(sts);
-
-    int ei1 = 4, ei2 = 2, ei3 = 7;
-    int sl1 = 0, sl2 = 5, sl3 = 2;
-    SuffixTreeVertex * stv1 = new SuffixTreeVertex(ei1, sl1),
-                    * stv2 = new SuffixTreeVertex(ei2, sl2),
-                    * stv3 = new SuffixTreeVertex(ei3, sl3);
-
-    assert(stb->getSuffixTreeSubstring(ei1, sl1) == sts.substr(ei1, sl1));
-    assert(stb->getSuffixTreeSubstring(ei2, sl2) == sts.substr(ei2, sl2));
-    assert(stb->getSuffixTreeSubstring(ei3, sl3) == sts.substr(ei3, sl3));
-
-    assert(stb->getVertexSubstring(stv1) == sts.substr(ei1, sl1));
-    assert(stb->getVertexSubstring(stv2) == sts.substr(ei2, sl2));
-    assert(stb->getVertexSubstring(stv3) == sts.substr(ei3, sl3));
-
-    delete stb;
-    delete stv1, stv2, stv3;
-}
-
-
-void getOverlayLengthTest() {
-    std::string equalSection = "abcdef", firstSuffix = "qwerty", secondSuffix = "asdfgg";
-    std::string firstString = equalSection + firstSuffix, secondString = equalSection + secondSuffix;
-
-    int overlayLength = getOverlayLength(firstString, secondString);
-
-    assert(overlayLength == equalSection.length());
-}
+std::string getSuffixTreeBuilderString(SuffixTreeBuilder *);
 
 void buildInIntermediaryTest() {
-    SuffixTreeVertex * parent = new SuffixTreeVertex(0, 0), 
-        * child = new SuffixTreeVertex(0, 0), * intermediary = new SuffixTreeVertex(0, 0);
+    SuffixTreeVertex * parent = createEmptyVertex(), 
+        * child = createEmptyVertex(), 
+        * intermediary = createEmptyVertex();
 
     buildInIntermediary(parent, child, intermediary);
 
@@ -112,36 +65,23 @@ void buildInIntermediaryTest() {
     assert(intermediary->getChildren()->at(0) == child);
     assert(parent->getChildren()->size() == 1);
     assert(intermediary->getChildren()->size() == 1);
+
+    delete parent, child, intermediary;
 }
 
 void createIndependentLeafVertexTest() {
-    SuffixTreeBuilder * builder = new SuffixTreeBuilder("hello_world");
-    std::string treeString = builder->getSuffixTreeSubstring(0, builder->getTreeStringLength());
+    SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
     int suffixLength = 6;
-    std::string someSuffix = treeString.substr(treeString.length() - suffixLength, suffixLength);
+    std::string treeString = builder->getSuffixTreeSubstring(0, builder->getTreeStringLength()),
+        someSuffix = treeString.substr(treeString.length() - suffixLength, suffixLength);
 
     SuffixTreeVertex * leaf = createIndependentLeafVertex(builder, someSuffix);
 
     assert(builder->getVertexSubstring(leaf) == someSuffix);
     assert(leaf->getChildren()->size() == 0);
     assert(leaf->getParent() == nullptr);
-}
 
-void hasChildWithPrefixCharTest() {
-    SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
-    std::string suffixTreeString = getSuffixTreeBuilderString(builder);
-    int firstCharEntryIndex = 0, secondCharEntryIndex = 1;
-    char firstChar = suffixTreeString.at(firstCharEntryIndex),
-        secondChar = suffixTreeString.at(firstCharEntryIndex);
-    SuffixTreeVertex * firstCharChild = new SuffixTreeVertex(firstCharEntryIndex, 1),
-        * secondCharChild = new SuffixTreeVertex(secondCharEntryIndex, 1);
-    SuffixTreeVertex * root = const_cast<SuffixTreeVertex *>(builder->getRoot());
-    
-    root->addChildRelation(firstCharChild);
-    root->addChildRelation(secondCharChild);
-
-    assert(hasChildWithPrefixChar(builder, root, firstChar));
-    assert(hasChildWithPrefixChar(builder, root, secondChar));
+    delete builder;
 }
 
 void getChildWithPrefixCharTest() {
@@ -159,27 +99,30 @@ void getChildWithPrefixCharTest() {
 
     assert(getChildWithPrefixChar(builder, root, firstChar) == firstCharChild);
     assert(getChildWithPrefixChar(builder, root, secondChar) == secondCharChild);
+
+    delete builder;
 }
 
 void isVertexSubstringSuperimposesWithSuffixTest() {
     SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
     int vertexSubstringLength = 5;
-    SuffixTreeVertex * vertex = new SuffixTreeVertex(0, vertexSubstringLength),
-        * root = const_cast<SuffixTreeVertex *>(builder->getRoot());
-    root->addChildRelation(vertex);
+    SuffixTreeVertex * vertex = new SuffixTreeVertex(0, vertexSubstringLength);
+    builder->getRoot()->addChildRelation(vertex);
 
     std::string stringToSuperimpose = builder->getVertexSubstring(vertex).substr(0, vertexSubstringLength + 2);
 
     assert(isVertexSubstringSuperimposesWithSuffix(builder, vertex, stringToSuperimpose));
+
+    delete builder;
 }
 
 void goUpUntilFoundPrefixLinkTest() {
     SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
     int entryIndex = 2, substringLength = 5;
-    SuffixTreeVertex * firstBranchFirstDeepVertex = new SuffixTreeVertex(0, 0),
-        * firstBranchSecondDeepVertex = new SuffixTreeVertex(0, 0),
+    SuffixTreeVertex * firstBranchFirstDeepVertex = createEmptyVertex(),
+        * firstBranchSecondDeepVertex = createEmptyVertex(),
         * firstBranchThirdDeepVertex = new SuffixTreeVertex(entryIndex, substringLength),
-        * secondBranchFirstDeepVertex = new SuffixTreeVertex(0, 0),
+        * secondBranchFirstDeepVertex = createEmptyVertex(),
         * root = const_cast<SuffixTreeVertex *>(builder->getRoot());
     root->addChildRelation(firstBranchFirstDeepVertex);
     root->addChildRelation(secondBranchFirstDeepVertex);
@@ -189,9 +132,12 @@ void goUpUntilFoundPrefixLinkTest() {
 
     firstBranchSecondDeepVertex->addPrefixLinkedVertex(secondBranchFirstDeepVertex, prefixLinkChar);
 
-    auto vertexWithPrefixLinkAndRestoredSuffix = goUpUntilFoundPrefixLink(builder, firstBranchThirdDeepVertex, prefixLinkChar);
+    auto vertexWithPrefixLinkAndRestoredSuffix = goUpUntilFoundPrefixLink(
+        builder, firstBranchThirdDeepVertex, prefixLinkChar);
     assert(vertexWithPrefixLinkAndRestoredSuffix.first == firstBranchSecondDeepVertex);
     assert(builder->getSuffixTreeSubstring(entryIndex, substringLength) == vertexWithPrefixLinkAndRestoredSuffix.second);
+
+    delete builder;
 }
 
 void goDownUntilSuffixSuperimposesTest() {
@@ -215,13 +161,15 @@ void goDownUntilSuffixSuperimposesTest() {
     assert(maxDeepVertexWhileOverlayingSubstringAndRemainingSuffix.second == 
            suffixTreeString.substr(stringOverlayLength - maxDeepVertexWhileOverlayingSubstringAndRemainingSuffix.second.length(), 
                                 maxDeepVertexWhileOverlayingSubstringAndRemainingSuffix.second.length()));
+    
+    delete builder;
 }
 
 void addLeafToVertexTest() {
     SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
     std::string suffixTreeString = getSuffixTreeBuilderString(builder);
     int suffixLength = 5,  entryIndex = suffixTreeString.length() - suffixLength;
-    SuffixTreeVertex * parent = new SuffixTreeVertex(0, 0);
+    SuffixTreeVertex * parent = createEmptyVertex();
     
     std::string suffixString = suffixTreeString.substr(entryIndex);
     SuffixTreeVertex * newLeaf = addLeafToVertex(builder, parent, suffixString);
@@ -230,6 +178,8 @@ void addLeafToVertexTest() {
     assert(parent->getChildren()->at(0) == newLeaf);
     assert(newLeaf->getParent() == parent);
     assert(newLeaf->getInfo().first == entryIndex && newLeaf->getInfo().second == suffixLength);
+
+    delete builder;
 }
 
 void goUpTheBranchesAndAddPrefixLinksIfNecessaryTest() {
@@ -255,13 +205,14 @@ void goUpTheBranchesAndAddPrefixLinksIfNecessaryTest() {
     assert(firstBranchFirstVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
     assert(firstBranchSecondVertex->getPrefixLinkedVertex(prefixChar) == nullptr);
 
+    delete builder;
 }
 
 void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest() {
     SuffixTreeBuilder * builder = createHelloWorldSuffixTreeBuilder();
     std::string suffixTreeString = getSuffixTreeBuilderString(builder);
     int substringEntryIndex = 0, substringLength = 5;
-    SuffixTreeVertex * branchParent = new SuffixTreeVertex(0, 0),
+    SuffixTreeVertex * branchParent = createEmptyVertex(),
         * branchChild = new SuffixTreeVertex(substringEntryIndex, substringLength);
     branchParent->addChildRelation(branchChild);
     std::string stringToSuperimpose = builder->getVertexSubstring(branchChild).substr(substringEntryIndex, substringLength - 2);
@@ -278,6 +229,8 @@ void splitBranchWhileSuffixSuperimposesAndGetSplitPlaceVertexTest() {
     assert(branchChild->getChildren()->size() == 0);
     assert(builder->getVertexSubstring(branchSplitPlace) + builder->getVertexSubstring(branchChild) == 
         builder->getSuffixTreeSubstring(substringEntryIndex, substringLength));
+
+    delete builder;
 }
 
 void forkBranchAndGetNewLeafTest() {
@@ -309,6 +262,8 @@ void forkBranchAndGetNewLeafTest() {
     assert(splitLeaf->getChildren()->size() == 0);
     assert(startLeaf->getParent() == splitPlaceVertex);
     assert(startLeaf->getChildren()->size() == 0);
+
+    delete builder;
 }
 
 void handleNextSuffixAndGetNewLeafTest() {
@@ -327,22 +282,59 @@ void handleNextSuffixAndGetNewLeafTest() {
     auto fourthBuiltLeaf = handleNextSuffixAndGetNewLeaf(builder, thirdBuiltLeaf, fourthLeafSubstring);
     
     assert(root->getChildren()->size() == 3);
+
+    delete builder;
 }
 
 void buildTest() {
-    SuffixTreeBuilder * stb = new SuffixTreeBuilder("abacaba");
-    
-    stb->build();
+    // This test depends on suffix string input
+    // Do not change SuffixTreeBuilder's constructor argument
+    SuffixTreeBuilder * builder = new SuffixTreeBuilder("abaca");
+         
+    builder->build();
+    SuffixTreeVertex * root = builder->getRoot(),  
+        * forkVertex = getChildWithPrefixChar(builder, root, 'a');
 
-    stb->printDebugView();
+    /*
+        Expected for input "acaba"
 
-    delete stb;
+         #ROOT# (deep : 0)
+        | 
+        |- baca$ (deep : 1)
+        | 
+        |- a (deep : 1)
+        |  | 
+        |  |- baca$ (deep : 2)
+        |  | 
+        |  |- ca$ (deep : 2)
+        |  | 
+        |  |- $ (deep : 2)
+        | 
+        |- ca$ (deep : 1)
+        | 
+        |- $ (deep : 1)
+    */
+
+    assert(root->getChildren()->size() == 4);
+    assert(builder->getVertexSubstring(getChildWithPrefixChar(builder, root, '$')) == "$");
+    assert(builder->getVertexSubstring(getChildWithPrefixChar(builder, root, 'c')) == "ca$");
+    assert(builder->getVertexSubstring(getChildWithPrefixChar(builder, root, 'b')) == "baca$");
+    assert(builder->getVertexSubstring(getChildWithPrefixChar(builder, root, 'a')) == "a");
+    assert(builder->getVertexSubstring(getChildWithPrefixChar(builder, forkVertex, 'b')) == "baca$");
+    assert(builder->getVertexSubstring(getChildWithPrefixChar(builder, forkVertex, 'c')) == "ca$");
+    assert(builder->getVertexSubstring(getChildWithPrefixChar(builder, forkVertex, '$')) == "$");
+
+    delete builder;
 }
 
 SuffixTreeBuilder * createHelloWorldSuffixTreeBuilder() {
     std::string suffixTreeString = "hello_world";
     SuffixTreeBuilder * builder = new SuffixTreeBuilder(suffixTreeString);
     return builder;
+}
+
+SuffixTreeVertex * createEmptyVertex() {
+    return new SuffixTreeVertex(0, 0);
 }
 
 std::string getSuffixTreeBuilderString(SuffixTreeBuilder * builder) {
