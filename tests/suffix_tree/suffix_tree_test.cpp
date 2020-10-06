@@ -15,15 +15,17 @@ bool contains(std::vector<T> *, T);
 
 void getEntryIndexesTest() {
 	std::string suffixTreeString = "abacaba";
-	SuffixTree * st = new SuffixTree(suffixTreeString);
+	SuffixTree * tree = new SuffixTree(suffixTreeString);
 
-	auto entries = st->getEntryIndexes("a");
+	auto entries = tree->getEntryIndexes("a");
 	
 	assert(entries->size() == 4);
 	assert(contains(entries, 0));
 	assert(contains(entries, 2));
 	assert(contains(entries, 4));
 	assert(contains(entries, 6));
+
+	delete tree;
 }
 
 template<typename T>
