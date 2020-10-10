@@ -1,3 +1,4 @@
+#include "../cache_config.hpp"
 #include "suffix_tree_builder.hpp"
 #include "vertex/suffix_tree_vertex.hpp"
 #include "subsidary/subsidary.hpp"
@@ -19,7 +20,7 @@ SuffixTreeBuilder::SuffixTreeBuilder(FastaSequence * sequence)
     : SuffixTreeBuilder(*(sequence->source), *(sequence->description)) {}
 
 SuffixTreeBuilder::SuffixTreeBuilder(std::string suffixTreeString) 
-    : SuffixTreeBuilder(suffixTreeString, "anonymous") {};
+    : SuffixTreeBuilder(suffixTreeString, std::string(DEFAULT_SEQUENCE_DESCRIPTION)) {};
 
 SuffixTreeBuilder::~SuffixTreeBuilder() {
     delete this->root;

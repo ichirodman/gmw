@@ -9,8 +9,6 @@
 #include <sys/types.h>
 #include <functional>
 
-#define CACHE_DIR "./cache"
-
 void createDirectoryIfNotExist(std::string);
 
 std::ofstream createCacheFileStream(std::string, int);
