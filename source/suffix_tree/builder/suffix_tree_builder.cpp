@@ -11,8 +11,15 @@
 std::string suffixTreeDebugView = "";
 
 
+SuffixTreeBuilder::SuffixTreeBuilder(std::string suffixTreeString, std::string description) 
+    : suffixTreeString(suffixTreeString + SPECIAL_END_CHAR), description(description), 
+        root(new SuffixTreeVertex(0, 0)) {}
+
+SuffixTreeBuilder::SuffixTreeBuilder(FastaSequence * sequence) 
+    : SuffixTreeBuilder(*(sequence->source), *(sequence->description)) {}
+
 SuffixTreeBuilder::SuffixTreeBuilder(std::string suffixTreeString) 
-    : suffixTreeString(suffixTreeString + SPECIAL_END_CHAR), root(new SuffixTreeVertex(0, 0)) {}
+    : SuffixTreeBuilder(suffixTreeString, "anonymous") {};
 
 SuffixTreeBuilder::~SuffixTreeBuilder() {
     delete this->root;

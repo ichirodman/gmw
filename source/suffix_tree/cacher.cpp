@@ -13,12 +13,19 @@
 
 void createDirectoryIfNotExist(std::string);
 
-void writeTextRepr(std::string, int, SuffixTreeBuilder *);
+std::ofstream createCacheFileStream(std::string, int);
+
+void writeHeader(std::ofstream &, std::string const &, std::string const &);
+
+void writeTextRepr(std::ofstream &, SuffixTreeBuilder *);
 
 void SuffixTreeCacher::cache(SuffixTree *suffixTree, std::string globalSampleName, int cachePartSerialNumber)
 {
     createDirectoryIfNotExist(globalSampleName);
-    writeTextRepr(globalSampleName, cachePartSerialNumber, suffixTree->builder);
+    std::ofstream cacheFileStream = createCacheFileStream(globalSampleName, cachePartSerialNumber);
+    writeHeader(cacheFileStream, suffixTree->builder->description, suffixTree->builder->suffixTreeString);
+    writeTextRepr(cacheFileStream, suffixTree->builder);
+    cacheFileStream.close();
 }
 
 void createDirectoryIfNotExist(std::string cacheSubdir)
@@ -34,17 +41,26 @@ void createDirectoryIfNotExist(std::string cacheSubdir)
     }
 }
 
+std::ofstream createCacheFileStream(std::string cacheSubdir, int cachePartSerialNumber) {
+    std::string const filePath = CACHE_DIR + std::string("/") + cacheSubdir + std::string("/") +
+        std::to_string(cachePartSerialNumber) + std::string(".") + CACHE_FILES_EXTENSION;
+    std::ofstream outfile(filePath);
+    return outfile;
+}
+
+void writeHeader(std::ofstream & fileStream, std::string const & description, std::string const & sequenceSource) {
+    fileStream << description << std::endl;
+    fileStream << sequenceSource << std::endl;
+}
+
 std::string getFormatedVertexTextRepr(SuffixTreeVertex *);
 
-void writeTextRepr(std::string cacheSubdir, int cachePartSerialNumber, SuffixTreeBuilder *builder)
+void writeTextRepr(std::ofstream & fileStream, SuffixTreeBuilder *builder)
 {
-    std::string const filePath = CACHE_DIR + std::string("/") + cacheSubdir + std::string("/") +
-                                 std::to_string(cachePartSerialNumber) + std::string(".") + CACHE_FILES_EXTENSION;
-    std::ofstream outfile(filePath);
     std::function<void (SuffixTreeVertex *)> recursiveTreeWritingToFile;
-    recursiveTreeWritingToFile = [&outfile, &recursiveTreeWritingToFile](SuffixTreeVertex *vertex) {
+    recursiveTreeWritingToFile = [&fileStream, &recursiveTreeWritingToFile](SuffixTreeVertex *vertex) {
         std::string vertexTextRepr = getFormatedVertexTextRepr(vertex);
-        outfile << vertexTextRepr << std::endl;
+        fileStream << vertexTextRepr;
         for (int i = 0; i < vertex->getChildren()->size(); ++i)
         {
             SuffixTreeVertex *child = vertex->getChildren()->at(i);
@@ -52,7 +68,7 @@ void writeTextRepr(std::string cacheSubdir, int cachePartSerialNumber, SuffixTre
         }
     };
     recursiveTreeWritingToFile(builder->getRoot());
-    outfile.close();
+    fileStream << std::endl;
 }
 
 std::string getFormatedVertexTextRepr(SuffixTreeVertex *vertex)
