@@ -18,6 +18,8 @@ public:
 
 private:
 	SuffixTreeBuilder * builder;
+
+	friend class SuffixTreeCacher;
 };
 
 
