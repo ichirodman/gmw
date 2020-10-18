@@ -1,4 +1,4 @@
-CC = g++ -std=gnu++0x
+CC = g++ -std=gnu++0x -std=c++17
 
 MAIN_ALGO_FILE = main.cpp
 MAIN_BIN_FILE = main_bin.exe

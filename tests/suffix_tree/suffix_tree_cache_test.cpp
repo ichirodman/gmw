@@ -1,7 +1,7 @@
-#include "../../source/suffix_tree/cacher.hpp"
-#include "../../source/suffix_tree/cache_config.hpp"
+#include "../../source/suffix_tree/cache/cacher.hpp"
+#include "../../source/suffix_tree/cache/cache_extractor.hpp"
+#include "../../source/suffix_tree/cache/cache_file_format.hpp"
 #include <assert.h>
-#include <fstream>
 #include <string>
 
 // Do not change definitions to avoid assertions' failatures
@@ -10,8 +10,14 @@
 
 void cacheSuffixTreeTest();
 
+void extractSuffixTreeCacheTest();
+
+void functionalSuffixTreeCacheTest();
+
 int main() {
     cacheSuffixTreeTest();
+    extractSuffixTreeCacheTest();
+    functionalSuffixTreeCacheTest();
     return 0;
 }
 
@@ -26,6 +32,29 @@ void cacheSuffixTreeTest() {
     assertOutputFileContentEqualsToExpected();
 
     delete st, stc;
+}
+
+void extractSuffixTreeCacheTest() {
+    std::string testCacheDirPath = CACHE_DIR + std::string("/") +
+        TEST_GLOBAL_CACHE_DIRNAME;
+    SuffixSubtreeCache * ssc = new SuffixSubtreeCache(testCacheDirPath, 0);
+
+    SuffixTree * extractedSuffixTree = ssc->translateSuffixTreeMask();
+
+    // TODO
+    assert(true);
+
+    delete ssc, extractedSuffixTree;
+}
+
+void functionalSuffixTreeCacheTest() {
+    std::string testCacheDirPath = CACHE_DIR + std::string("/") +
+        TEST_GLOBAL_CACHE_DIRNAME;
+    SuffixTreeCacheExtractor * stce = new SuffixTreeCacheExtractor(testCacheDirPath);
+
+    assert(true);
+
+    delete stce;
 }
 
 void assertOutputFileContentEqualsToExpected() {

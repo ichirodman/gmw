@@ -2,7 +2,7 @@
 #define SUFFIX_TREE_CACHER
 
 
-#include "suffix_tree.hpp"
+#include "../suffix_tree.hpp"
 #include <string>
 
 
