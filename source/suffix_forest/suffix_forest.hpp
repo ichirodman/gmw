@@ -5,7 +5,7 @@
 #ifndef GMW_SUFFIX_FOREST_HPP
 #define GMW_SUFFIX_FOREST_HPP
 
-#define SUFFIX_TREE_STRING_MAX_LENGTH 10000
+#define SUFFIX_TREE_STRING_MIN_LENGTH 10000
 
 #include <vector>
 #include "../utils/fasta.hpp"

@@ -9,16 +9,20 @@ SuffixForest::SuffixForest(FastaSequence *fastaSequence)
         : sequence(fastaSequence), suffixTrees(new std::vector<SuffixTree *>()) {}
 
 void SuffixForest::build() {
-    int suffixTreesAmount = (this->sequence->source->length() + SUFFIX_TREE_STRING_MAX_LENGTH - 1)
-                            / SUFFIX_TREE_STRING_MAX_LENGTH;
+    int sequenceLength = this->sequence->source->length(),
+            additiveLength = sequenceLength - SUFFIX_TREE_STRING_MIN_LENGTH *
+                                              (sequenceLength / SUFFIX_TREE_STRING_MIN_LENGTH),
+            sliceLength = SUFFIX_TREE_STRING_MIN_LENGTH + additiveLength,
+            suffixTreesAmount = sequenceLength / sliceLength;
+    std::cout << "TOTAL SEQUENCE LENGTH : " << sequenceLength << std::endl;
     std::cout << "Going to build " << suffixTreesAmount << " suffix trees" << std::endl;
-    for (int sliceEntry = 0, i = 1, sequenceLength = this->sequence->source->length();
-         sliceEntry < sequenceLength; sliceEntry += SUFFIX_TREE_STRING_MAX_LENGTH, i++) {
-        int sliceLength = sequenceLength - sliceEntry < SUFFIX_TREE_STRING_MAX_LENGTH ?
-                          sequenceLength - sliceEntry : SUFFIX_TREE_STRING_MAX_LENGTH;
-        std::string sequenceSlice = this->sequence->source->substr(sliceEntry, sliceLength);
+    for (int sliceEntry = 0, i = 1; sequenceLength - sliceEntry > sliceLength; sliceEntry += sliceLength, i++) {
+        int currentSliceLength = sequenceLength - sliceEntry < sliceLength * 2 ?
+                                 sequenceLength - sliceEntry : sliceLength;
+        std::string sequenceSlice = this->sequence->source->substr(sliceEntry, currentSliceLength);
         SuffixTree *suffixTree = new SuffixTree(sequenceSlice);
         this->suffixTrees->push_back(suffixTree);
+        std::cout << "Entry : " << sliceEntry << " len: " << currentSliceLength << std::endl;
         std::cout << "Built suffix tree num. " << i << ", left to build: " << (suffixTreesAmount - i) << std::endl;
     }
 }

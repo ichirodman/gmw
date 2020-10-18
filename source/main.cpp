@@ -3,7 +3,7 @@
 #include "suffix_forest/suffix_forest.hpp"
 
 int main() {
-    std::string filename = "small/source.fasta";
+    std::string filename = "large1/large_genome1.fasta";
     auto *ffc = new FastaFileContent(filename);
     FastaSequence *fastaSequence = ffc->sequences.at(0);
     startTiming();
