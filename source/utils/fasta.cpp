@@ -23,7 +23,7 @@ FastaFileContent::FastaFileContent(std::string filename) : filename(filename)
     }
     else
     {
-        std::cerr << "File not found" << std::endl;
+        std::cerr << "Fasta file not found" << std::endl;
     }
     in.close();
 }

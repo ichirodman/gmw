@@ -3,15 +3,14 @@
 
 
 #include <string>
-#include "../../utils/fasta.hpp"
+#include "../../../utils/fasta.hpp"
 #include "vertex/suffix_tree_vertex.hpp"
 
 
 class SuffixTreeBuilder {
 public:
-	SuffixTreeBuilder(std::string, std::string);
-	SuffixTreeBuilder(FastaSequence *);
-	SuffixTreeBuilder(std::string);
+	SuffixTreeBuilder(std::string &, std::string);
+	explicit SuffixTreeBuilder(std::string &);
 	~SuffixTreeBuilder();
 
 	SuffixTreeVertex * getRoot();

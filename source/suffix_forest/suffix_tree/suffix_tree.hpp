@@ -10,16 +10,16 @@
 
 class SuffixTree {
 public:
-	SuffixTree(const std::string &);
-	
-	~SuffixTree();
+    SuffixTree(std::string &);
 
-	std::vector<int> * getEntryIndexes(std::string);
+    ~SuffixTree();
+
+    std::vector<int> *getEntryIndexes(std::string);
 
 private:
-	SuffixTreeBuilder * builder;
+    SuffixTreeBuilder *builder;
 
-	friend class SuffixTreeCacher;
+    friend class SuffixTreeCacher;
 };
 
 

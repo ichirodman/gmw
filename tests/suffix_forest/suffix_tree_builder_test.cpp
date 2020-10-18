@@ -1,7 +1,9 @@
-#include "../../source/suffix_tree/builder/vertex/suffix_tree_vertex.hpp"
-#include "../../source/suffix_tree/builder/suffix_tree_builder.hpp"
-#include "../../source/suffix_tree/builder/subsidary/subsidary.hpp"
 #include <assert.h>
+#include <iostream>
+
+#include "../../source/suffix_forest/suffix_tree/builder/vertex/suffix_tree_vertex.hpp"
+#include "../../source/suffix_forest/suffix_tree/builder/suffix_tree_builder.hpp"
+#include "../../source/suffix_forest/suffix_tree/builder/subsidary/subsidary.hpp"
 
 
 void getVertexSubstringTest();
@@ -31,6 +33,7 @@ void handleNextSuffixAndGetNewLeafTest();
 void buildTest();
 
 int main() {
+    std::cout << "Started suffix tree builder test successfully" << std::endl;
     buildInIntermediaryTest();
     createIndependentLeafVertexTest();
     getChildWithPrefixCharTest();
@@ -43,6 +46,7 @@ int main() {
     forkBranchAndGetNewLeafTest();
     handleNextSuffixAndGetNewLeafTest();
     buildTest();
+    std::cout << "Finished suffix tree builder test successfully" << std::endl;
     return 0;
 }
 
@@ -66,7 +70,7 @@ void buildInIntermediaryTest() {
     assert(parent->getChildren()->size() == 1);
     assert(intermediary->getChildren()->size() == 1);
 
-    delete parent, child, intermediary;
+    delete parent;
 }
 
 void createIndependentLeafVertexTest() {
@@ -267,7 +271,8 @@ void forkBranchAndGetNewLeafTest() {
 }
 
 void handleNextSuffixAndGetNewLeafTest() {
-    SuffixTreeBuilder * builder = new SuffixTreeBuilder("abacaba");
+    std::string builderString = "abacaba";
+    SuffixTreeBuilder * builder = new SuffixTreeBuilder(builderString);
     std::string suffixTreeString = getSuffixTreeBuilderString(builder);
     int stringLength = suffixTreeString.length();
     SuffixTreeVertex * firstBuiltVertex = new SuffixTreeVertex(stringLength - 1, 1),
@@ -288,8 +293,9 @@ void handleNextSuffixAndGetNewLeafTest() {
 
 void buildTest() {
     // This test depends on suffix string input
-    // Do not change SuffixTreeBuilder's constructor argument
-    SuffixTreeBuilder * builder = new SuffixTreeBuilder("abaca");
+    // Do not change builderString
+    std::string builderString = "abaca";
+    SuffixTreeBuilder * builder = new SuffixTreeBuilder(builderString);
          
     builder->build();
     SuffixTreeVertex * root = builder->getRoot(),  

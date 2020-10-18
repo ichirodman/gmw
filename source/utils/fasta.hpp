@@ -15,7 +15,7 @@ struct FastaFileContent
 {
     FastaFileContent(std::string filename);
 
-    std::vector<FastaSequence const *> sequences;
+    std::vector<FastaSequence *> sequences;
 private:
     std::string filename;
 };
