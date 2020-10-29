@@ -1,6 +1,6 @@
 #include <assert.h>
-#include <iostream>
 
+#include "../tests_maintenance.hpp"
 #include "../../source/suffix_forest/suffix_tree/builder/vertex/suffix_tree_vertex.hpp"
 #include "../../source/suffix_forest/suffix_tree/builder/suffix_tree_builder.hpp"
 #include "../../source/suffix_forest/suffix_tree/builder/subsidary/subsidary.hpp"
@@ -33,7 +33,7 @@ void handleNextSuffixAndGetNewLeafTest();
 void buildTest();
 
 int main() {
-    std::cout << "Started suffix tree builder test successfully" << std::endl;
+    printTestStarted("suffix tree builder");
     buildInIntermediaryTest();
     createIndependentLeafVertexTest();
     getChildWithPrefixCharTest();
@@ -46,7 +46,7 @@ int main() {
     forkBranchAndGetNewLeafTest();
     handleNextSuffixAndGetNewLeafTest();
     buildTest();
-    std::cout << "Finished suffix tree builder test successfully" << std::endl;
+    printLastTestFinished();
     return 0;
 }
 

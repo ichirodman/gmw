@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <string>
-#include <iostream>
 
+#include "../tests_maintenance.hpp"
 #include "../../source/suffix_forest/suffix_tree/cache/cacher.hpp"
 #include "../../source/suffix_forest/suffix_tree/cache/cache_extractor.hpp"
 #include "../../source/suffix_forest/suffix_tree/cache/cache_file_format.hpp"
@@ -17,12 +17,12 @@ void extractSuffixTreeCacheTest();
 void functionalSuffixTreeCacheTest();
 
 int main() {
-    std::cout << "Started suffix tree cache test successfully" << std::endl;
-    std::cout << "Note: TODO tests" << std::endl;
+    printTestStarted("suffix tree cache");
+    printTODO("Implement the remaining tests");
     cacheSuffixTreeTest();
     extractSuffixTreeCacheTest();
     functionalSuffixTreeCacheTest();
-    std::cout << "Finished suffix tree cache test successfully" << std::endl;
+    printLastTestFinished();
     return 0;
 }
 
@@ -58,11 +58,11 @@ void extractSuffixTreeCacheTest() {
 void functionalSuffixTreeCacheTest() {
     std::string testCacheDirPath = CACHE_DIR + std::string("/") +
                                    TEST_GLOBAL_CACHE_DIRNAME;
-    SuffixTreeCacheExtractor *stce = new SuffixTreeCacheExtractor(testCacheDirPath);
+    SuffixTreeCacheExtractor *suffixTreeCacheExtractor = new SuffixTreeCacheExtractor(testCacheDirPath);
 
     assert(true);
 
-    delete stce;
+    delete suffixTreeCacheExtractor;
 }
 
 void assertOutputFileContentEqualsToExpected() {

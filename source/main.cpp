@@ -7,8 +7,8 @@ int main() {
     auto *ffc = new FastaFileContent(filename);
     FastaSequence *fastaSequence = ffc->sequences.at(0);
     startTiming();
-    auto *suffixTree = new SuffixForest(fastaSequence);
-    suffixTree->build();
+    auto *suffixForest = new SuffixForest(fastaSequence);
+    suffixForest->build();
     finishTiming();
     return 0;
 }

@@ -4,11 +4,13 @@
 
 #include "suffix_forest.hpp"
 #include <iostream>
+#include <functional>
 
 SuffixForest::SuffixForest(FastaSequence *fastaSequence)
         : sequence(fastaSequence), suffixTrees(new std::vector<SuffixTree *>()) {}
 
 void SuffixForest::build() {
+    // TODO remove debug prints
     int sequenceLength = this->sequence->source->length(),
             additiveLength = sequenceLength - SUFFIX_TREE_STRING_MIN_LENGTH *
                                               (sequenceLength / SUFFIX_TREE_STRING_MIN_LENGTH),
@@ -20,7 +22,7 @@ void SuffixForest::build() {
         int currentSliceLength = sequenceLength - sliceEntry < sliceLength * 2 ?
                                  sequenceLength - sliceEntry : sliceLength;
         std::string sequenceSlice = this->sequence->source->substr(sliceEntry, currentSliceLength);
-        SuffixTree *suffixTree = new SuffixTree(sequenceSlice);
+        auto *suffixTree = new SuffixTree(sequenceSlice);
         this->suffixTrees->push_back(suffixTree);
         std::cout << "Entry : " << sliceEntry << " len: " << currentSliceLength << std::endl;
         std::cout << "Built suffix tree num. " << i << ", left to build: " << (suffixTreesAmount - i) << std::endl;
@@ -29,10 +31,9 @@ void SuffixForest::build() {
 
 void supplement(std::vector<int> *, std::vector<int> *);
 
-std::vector<int> *SuffixForest::getEntryIndexes(std::string substring) {
-    std::vector<int> *globalEntries = new std::vector<int>();
-    for (int i = 0; i < this->suffixTrees->size(); ++i) {
-        SuffixTree *suffixTree = this->suffixTrees->at(i);
+std::vector<int> *SuffixForest::getEntryIndexes(const std::string &substring) {
+    auto *globalEntries = new std::vector<int>();
+    for (auto suffixTree : *this->suffixTrees) {
         std::vector<int> *treeEntries = suffixTree->getEntryIndexes(substring);
         supplement(globalEntries, treeEntries);
     }
@@ -42,8 +43,7 @@ std::vector<int> *SuffixForest::getEntryIndexes(std::string substring) {
 bool contains(std::vector<int> *, int);
 
 void supplement(std::vector<int> *main, std::vector<int> *additional) {
-    for (int i = 0; i < additional->size(); ++i) {
-        int element = additional->at(i);
+    for (int element : *additional) {
         if (!contains(main, element)) {
             main->push_back(element);
         }
@@ -51,10 +51,6 @@ void supplement(std::vector<int> *main, std::vector<int> *additional) {
 }
 
 bool contains(std::vector<int> *v, int val) {
-    for (int i = 0; i < v->size(); ++i) {
-        if (v->at(i) == val) {
-            return true;
-        }
-    }
-    return false;
+    std::function<bool(int)> equalToVal = [&val](int element) { return element == val; };
+    return std::any_of(v->begin(), v->end(), equalToVal);
 }

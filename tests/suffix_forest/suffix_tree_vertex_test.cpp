@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <iostream>
 
+#include "../tests_maintenance.hpp"
 #include "../../source/suffix_forest/suffix_tree/builder/vertex/suffix_tree_vertex.hpp"
 
 
@@ -21,7 +22,7 @@ void rootClassificationTest();
 void leafClassificationTest();
 
 int main() {
-    std::cout << "Started suffix tree vertex test" << std::endl;
+    printTestStarted("suffix tree vertex");
     updateInfoTest();
     childAddTest();
     removeChildTest();
@@ -30,7 +31,7 @@ int main() {
     parentSetTest();
     rootClassificationTest();
     leafClassificationTest();
-    std::cout << "Finished suffix tree vertex test successfully" << std::endl;
+    printLastTestFinished();
     return 0;
 }
 

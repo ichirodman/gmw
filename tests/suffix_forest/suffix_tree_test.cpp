@@ -2,15 +2,16 @@
 #include <algorithm>
 #include <iostream>
 
+#include "../tests_maintenance.hpp"
 #include "../../source/suffix_forest/suffix_tree/suffix_tree.hpp"
 
 
 void getEntryIndexesTest();
 
 int main() {
-    std::cout << "Finished suffix tree test successfully" << std::endl;
+    printTestStarted("suffix tree");
 	getEntryIndexesTest();
-	std::cout << "Finished suffix tree test successfully" << std::endl;
+	printLastTestFinished();
 	return 0;
 }
 

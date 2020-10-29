@@ -13,11 +13,11 @@
 
 class SuffixForest {
 public:
-    SuffixForest(FastaSequence *);
+    explicit SuffixForest(FastaSequence *);
 
     void build();
 
-    std::vector<int> *getEntryIndexes(std::string);
+    std::vector<int> *getEntryIndexes(const std::string&);
 
 private:
     FastaSequence *sequence;
