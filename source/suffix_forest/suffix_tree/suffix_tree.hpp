@@ -10,7 +10,7 @@
 
 class SuffixTree {
 public:
-    SuffixTree(std::string &);
+    SuffixTree(std::string &, int);
 
     ~SuffixTree();
 
@@ -18,6 +18,7 @@ public:
 
 private:
     SuffixTreeBuilder *builder;
+    int globalSequenceEntryIndex;
 
     friend class SuffixTreeCacher;
 };

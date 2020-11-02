@@ -9,22 +9,34 @@
 SuffixForest::SuffixForest(FastaSequence *fastaSequence)
         : sequence(fastaSequence), suffixTrees(new std::vector<SuffixTree *>()) {}
 
+SuffixForest::~SuffixForest() {
+    delete sequence;
+    for (auto &suffixTree : *suffixTrees) {
+        delete suffixTree;
+    }
+    delete suffixTrees;
+}
+
 void SuffixForest::build() {
+    // Doesn't work with sequences with length less than
+    // SUFFIX_TREE_STRING_MIN_LENGTH * 2
     // TODO remove debug prints
     int sequenceLength = this->sequence->source->length(),
-            additiveLength = sequenceLength - SUFFIX_TREE_STRING_MIN_LENGTH *
-                                              (sequenceLength / SUFFIX_TREE_STRING_MIN_LENGTH),
-            sliceLength = SUFFIX_TREE_STRING_MIN_LENGTH + additiveLength,
-            suffixTreesAmount = sequenceLength / sliceLength;
-    std::cout << "TOTAL SEQUENCE LENGTH : " << sequenceLength << std::endl;
+            suffixTreesAmount = (sequenceLength - SUFFIX_TREE_STRING_OVERLAY_LENGTH) /
+                                (SUFFIX_TREE_STRING_MIN_LENGTH - SUFFIX_TREE_STRING_OVERLAY_LENGTH),
+            sliceLength = (sequenceLength + (suffixTreesAmount - 1) * SUFFIX_TREE_STRING_OVERLAY_LENGTH)
+                          / suffixTreesAmount;
+    std::cout << "Total suffix forest string length : " << sequenceLength << std::endl;
     std::cout << "Going to build " << suffixTreesAmount << " suffix trees" << std::endl;
-    for (int sliceEntry = 0, i = 1; sequenceLength - sliceEntry > sliceLength; sliceEntry += sliceLength, i++) {
-        int currentSliceLength = sequenceLength - sliceEntry < sliceLength * 2 ?
-                                 sequenceLength - sliceEntry : sliceLength;
+    for (int sliceEntry = 0, i = 1; i <= suffixTreesAmount;
+         sliceEntry += sliceLength - SUFFIX_TREE_STRING_OVERLAY_LENGTH, i++) {
+        int currentSliceLength = i == suffixTreesAmount ? sequenceLength - sliceEntry : sliceLength;
+        std::cout << "Suffix tree properties : " << std::endl
+                  << "\tglobalSequenceEntryIndex : " << sliceEntry << std::endl
+                  <<"\tsequenceSliceLength: " << currentSliceLength << std::endl;
         std::string sequenceSlice = this->sequence->source->substr(sliceEntry, currentSliceLength);
-        auto *suffixTree = new SuffixTree(sequenceSlice);
+        auto *suffixTree = new SuffixTree(sequenceSlice, sliceEntry);
         this->suffixTrees->push_back(suffixTree);
-        std::cout << "Entry : " << sliceEntry << " len: " << currentSliceLength << std::endl;
         std::cout << "Built suffix tree num. " << i << ", left to build: " << (suffixTreesAmount - i) << std::endl;
     }
 }
@@ -37,6 +49,7 @@ std::vector<int> *SuffixForest::getEntryIndexes(const std::string &substring) {
         std::vector<int> *treeEntries = suffixTree->getEntryIndexes(substring);
         supplement(globalEntries, treeEntries);
     }
+    std::sort(globalEntries->begin(), globalEntries->end());
     return globalEntries;
 }
 

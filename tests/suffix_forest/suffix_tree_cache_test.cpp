@@ -30,7 +30,7 @@ void assertOutputFileContentEqualsToExpected();
 
 void cacheSuffixTreeTest() {
     std::string testString = TEST_STRING;
-    SuffixTree *st = new SuffixTree(testString);
+    SuffixTree *st = new SuffixTree(testString, 0);
     SuffixTreeCacher *stc = new SuffixTreeCacher();
 
     stc->cache(st, TEST_GLOBAL_CACHE_DIRNAME, 0);

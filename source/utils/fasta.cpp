@@ -2,28 +2,22 @@
 #include <fstream>
 #include <iostream>
 
-FastaFileContent::FastaFileContent(std::string filename) : filename(filename)
-{
+FastaFileContent::FastaFileContent(std::string filename, bool isInDataDir)
+        : filePath((isInDataDir ? "./data/" : "./") + filename) {
     std::string line;
-    std::ifstream in("./data/" + filename);
-    std::cout << "FILENAME: " << "../data/" + filename << std::endl;
-    if (in.is_open())
-    {
-        while (getline(in, line))
-        {
-            if (line.find('>') != std::string::npos)
-            {
-                sequences.push_back(new FastaSequence(new std::string(line), new std::string("")));
-            }
-            else
-            {
+    std::ifstream in(this->filePath);
+    std::cout << "Name of fasta file extracting : " << this->filePath << std::endl;
+    if (in.is_open()) {
+        while (getline(in, line)) {
+            if (line.find('>') != std::string::npos) {
+                sequences.push_back(new FastaSequence(new std::string(line),
+                                                      new std::string("")));
+            } else {
                 sequences.back()->source->append(line);
             }
         }
-    }
-    else
-    {
-        std::cerr << "Fasta file not found" << std::endl;
+    } else {
+        std::cerr << "Haven\'t found fasta file with path : " << this->filePath << std::endl;
     }
     in.close();
 }

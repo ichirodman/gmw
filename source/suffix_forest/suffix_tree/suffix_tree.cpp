@@ -1,8 +1,13 @@
 #include "suffix_tree.hpp"
 #include "builder/subsidary/subsidary.hpp"
-#include <string>
 
-SuffixTree::SuffixTree(std::string &sequence) {
+#include <string>
+#include <iostream>
+#include <functional>
+
+
+SuffixTree::SuffixTree(std::string &sequence, int globalSequenceEntryIndex)
+        : globalSequenceEntryIndex(globalSequenceEntryIndex) {
     this->builder = new SuffixTreeBuilder(sequence);
     this->builder->build();
 }
@@ -11,24 +16,55 @@ SuffixTree::~SuffixTree() {
     delete this->builder;
 }
 
-void getRecursiveDownAndCountLeaves(SuffixTreeVertex *vertex, std::vector<int> *entries, int prefixLen);
+bool doSecondStringOverlays(const std::string &, const std::string &);
+
+void getRecursiveDownAndCountLeaves(SuffixTreeVertex *vertex, std::vector<int> *entries, int prefixLen,
+                                    int indexAdditive, int suffixTreeStringLength, int substringLength);
 
 std::vector<int> *SuffixTree::getEntryIndexes(std::string substring) {
-    auto farthestVertexAndRemainingSuffix = goDownUntilSuffixSuperimposes(this->builder, this->builder->getRoot(),
-                                                                        substring);
+    int substringLength = substring.length(), entryIndexesAdditive = this->globalSequenceEntryIndex,
+            suffixTreeStringLength = this->builder->getTreeStringLength();
     std::vector<int> *entries = new std::vector<int>();
-    getRecursiveDownAndCountLeaves(farthestVertexAndRemainingSuffix.first, entries,
-                                  farthestVertexAndRemainingSuffix.second.length());
+
+    auto farthestVertexAndRemainingSuffix =
+            goDownUntilSuffixSuperimposes(this->builder, this->builder->getRoot(), substring);
+
+    const std::string remainingSuffix = farthestVertexAndRemainingSuffix.second;
+    auto farthestVertex = farthestVertexAndRemainingSuffix.first;
+    std::function<void(SuffixTreeVertex *, int)> fillEntries =
+            [&entries, entryIndexesAdditive, suffixTreeStringLength, substringLength]
+                    (SuffixTreeVertex *farthestVertex, int remainingSuffixLength) {
+                getRecursiveDownAndCountLeaves(farthestVertex, entries, remainingSuffixLength,
+                                               entryIndexesAdditive, suffixTreeStringLength, substringLength);
+            };
+
+    if (remainingSuffix.length() == 0) {
+        fillEntries(farthestVertex, remainingSuffix.length());
+    } else {
+        auto childWithPrefixChar = getChildWithPrefixChar(this->builder, farthestVertex, remainingSuffix.at(0));
+        const std::string childWithPrefixCharString = this->builder->getVertexSubstring(childWithPrefixChar);
+        if (childWithPrefixChar != nullptr && doSecondStringOverlays(childWithPrefixCharString, remainingSuffix)) {
+            fillEntries(getChildWithPrefixChar(this->builder, farthestVertex, remainingSuffix.at(0)),
+                        childWithPrefixCharString.length() - remainingSuffix.length());
+        }
+    }
+
     return entries;
 }
 
-void getRecursiveDownAndCountLeaves(SuffixTreeVertex *vertex, std::vector<int> *entries, int prefixLen) {
+bool doSecondStringOverlays(const std::string &first, const std::string &second) {
+    return first.length() >= second.length() && first.substr(0, second.length()) == second;
+}
+
+void getRecursiveDownAndCountLeaves(SuffixTreeVertex *vertex, std::vector<int> *entries, int prefixLen,
+                                    int indexAdditive, int suffixTreeStringLength, int substringLength) {
     if (vertex->getChildren()->size() > 0) {
         for (int i = 0; i < vertex->getChildren()->size(); ++i) {
             SuffixTreeVertex *child = vertex->getChildren()->at(i);
-            getRecursiveDownAndCountLeaves(child, entries, prefixLen + child->getInfo().second);
+            getRecursiveDownAndCountLeaves(child, entries, prefixLen + child->getInfo().second,
+                                           indexAdditive, suffixTreeStringLength, substringLength);
         }
     } else {
-        entries->push_back(prefixLen - 1);
+        entries->push_back(indexAdditive + suffixTreeStringLength - prefixLen - substringLength);
     }
 }

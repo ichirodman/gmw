@@ -10,7 +10,9 @@
 class SuffixTreeBuilder {
 public:
 	SuffixTreeBuilder(std::string &, std::string);
+
 	explicit SuffixTreeBuilder(std::string &);
+
 	~SuffixTreeBuilder();
 
 	SuffixTreeVertex * getRoot();
