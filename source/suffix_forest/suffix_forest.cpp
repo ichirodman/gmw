@@ -26,19 +26,20 @@ void SuffixForest::build() {
                                 (SUFFIX_TREE_STRING_MIN_LENGTH - SUFFIX_TREE_STRING_OVERLAY_LENGTH),
             sliceLength = (sequenceLength + (suffixTreesAmount - 1) * SUFFIX_TREE_STRING_OVERLAY_LENGTH)
                           / suffixTreesAmount;
-    std::cout << "Total suffix forest string length : " << sequenceLength << std::endl;
-    std::cout << "Going to build " << suffixTreesAmount << " suffix trees" << std::endl;
+//    std::cout << "Total suffix forest string length : " << sequenceLength << std::endl;
+    std::cout << "-- Going to build " << suffixTreesAmount << " suffix trees --" << std::endl;
     for (int sliceEntry = 0, i = 1; i <= suffixTreesAmount;
          sliceEntry += sliceLength - SUFFIX_TREE_STRING_OVERLAY_LENGTH, i++) {
         int currentSliceLength = i == suffixTreesAmount ? sequenceLength - sliceEntry : sliceLength;
-        std::cout << "Suffix tree properties : " << std::endl
-                  << "\tglobalSequenceEntryIndex : " << sliceEntry << std::endl
-                  <<"\tsequenceSliceLength: " << currentSliceLength << std::endl;
+//        std::cout << "| Suffix tree properties | " << std::endl
+//                  << "+---- globalSequenceEntryIndex : " << sliceEntry << std::endl
+//                  << "+---- sequenceSliceLength: " << currentSliceLength << std::endl;
         std::string sequenceSlice = this->sequence->source->substr(sliceEntry, currentSliceLength);
         auto *suffixTree = new SuffixTree(sequenceSlice, sliceEntry);
         this->suffixTrees->push_back(suffixTree);
         std::cout << "Built suffix tree num. " << i << ", left to build: " << (suffixTreesAmount - i) << std::endl;
     }
+    std::cout << "-- Suffix forest built successfully --" << std::endl;
 }
 
 void supplement(std::vector<int> *, std::vector<int> *);
@@ -51,6 +52,10 @@ std::vector<int> *SuffixForest::getEntryIndexes(const std::string &substring) {
     }
     std::sort(globalEntries->begin(), globalEntries->end());
     return globalEntries;
+}
+
+const std::string &SuffixForest::getSequenceDescription() {
+    return *(this->sequence->description);
 }
 
 bool contains(std::vector<int> *, int);

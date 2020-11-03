@@ -1,14 +1,17 @@
 #include "utils/fasta.hpp"
 #include "utils/code_timing.hpp"
-#include "suffix_forest/suffix_forest.hpp"
+#include "slice_matcher/approximate/approximate_slice_matcher.hpp"
+#include "slice_matcher/approximate/approximate_slice_matches_file_formatter.hpp"
+
 
 int main() {
-    std::string filename = "large1/large_genome1.fasta";
-    auto *ffc = new FastaFileContent(filename);
-    FastaSequence *fastaSequence = ffc->sequences.at(0);
     startTiming();
-    auto *suffixForest = new SuffixForest(fastaSequence);
-    suffixForest->build();
+    auto *firstFastaFile = new FastaFileContent("large2/large_genome1.fasta"),
+            *secondFastaFile = new FastaFileContent("large2/large_genome2.fasta");
+    auto sliceMatcher = new GlobalApproximateSliceMatcher(firstFastaFile->sequences.at(0),
+                                                          secondFastaFile->sequences.at(0));
+    auto fileFormatter = new ApproximateSliceMatchesFileFormat("fuck_you.txt");
+    fileFormatter->write(sliceMatcher);
     finishTiming();
     return 0;
 }

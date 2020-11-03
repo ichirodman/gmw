@@ -23,6 +23,8 @@ public:
 
     std::vector<int> *getEntryIndexes(const std::string &);
 
+    const std::string &getSequenceDescription();
+
 private:
     FastaSequence *sequence;
 

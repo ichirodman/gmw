@@ -1,7 +1,5 @@
 #include <assert.h>
 #include <algorithm>
-#include <iostream>
-
 #include "../tests_maintenance.hpp"
 #include "../../source/suffix_forest/suffix_tree/suffix_tree.hpp"
 
@@ -15,29 +13,33 @@ int main() {
     return 0;
 }
 
-template<typename T>
-bool contains(std::vector<T> *, T);
+bool equals(std::vector<int> *, std::vector<int>);
 
 void getEntryIndexesTest() {
     std::string suffixTreeString = "abacababdf";
     SuffixTree *tree = new SuffixTree(suffixTreeString, 0);
 
-    auto entries = tree->getEntryIndexes("a");
+    auto firstNotEmptyEntries = tree->getEntryIndexes("a"),
+            secondNotEmptyEntries = tree->getEntryIndexes("aca"),
+            firstEmptyEntries = tree->getEntryIndexes("m"),
+            secondEmptyEntries = tree->getEntryIndexes("abmm"),
+            thirdEmptyEntries = tree->getEntryIndexes("bacabfff");
 
-    for (int i = 0; i < entries->size(); ++i)
-        std::cout << entries->at(i) << " ";
-    std::cout << std::endl;
-
-    assert(entries->size() == 4);
-    assert(contains(entries, 0));
-    assert(contains(entries, 2));
-    assert(contains(entries, 4));
-    assert(contains(entries, 6));
+    assert(equals(firstNotEmptyEntries, {0, 2, 4, 6}));
+    assert(equals(secondNotEmptyEntries, {2}));
+    assert(equals(firstEmptyEntries, {}));
+    assert(equals(secondEmptyEntries, {}));
+    assert(equals(thirdEmptyEntries, {}));
 
     delete tree;
 }
 
-template<typename T>
-bool contains(std::vector<T> *v, T val) {
-    return std::find(v->begin(), v->end(), val) != v->end();
+bool equals(std::vector<int> *query, std::vector<int> v) {
+    if (query->size() == v.size()) {
+        std::sort(query->begin(), query->end());
+        std::sort(v.begin(), v.end());
+        return std::equal(query->begin(), query->end(), v.begin());
+    } else {
+        return false;
+    }
 }

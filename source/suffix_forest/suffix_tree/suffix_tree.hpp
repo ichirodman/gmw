@@ -18,6 +18,7 @@ public:
 
 private:
     SuffixTreeBuilder *builder;
+
     int globalSequenceEntryIndex;
 
     friend class SuffixTreeCacher;

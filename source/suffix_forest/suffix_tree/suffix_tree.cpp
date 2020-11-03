@@ -2,8 +2,8 @@
 #include "builder/subsidary/subsidary.hpp"
 
 #include <string>
-#include <iostream>
 #include <functional>
+#include <algorithm>
 
 
 SuffixTree::SuffixTree(std::string &sequence, int globalSequenceEntryIndex)
@@ -40,7 +40,7 @@ std::vector<int> *SuffixTree::getEntryIndexes(std::string substring) {
 
     if (remainingSuffix.length() == 0) {
         fillEntries(farthestVertex, remainingSuffix.length());
-    } else {
+    } else if (hasChildWithPrefixChar(this->builder, farthestVertex, remainingSuffix.at(0))) {
         auto childWithPrefixChar = getChildWithPrefixChar(this->builder, farthestVertex, remainingSuffix.at(0));
         const std::string childWithPrefixCharString = this->builder->getVertexSubstring(childWithPrefixChar);
         if (childWithPrefixChar != nullptr && doSecondStringOverlays(childWithPrefixCharString, remainingSuffix)) {
@@ -49,6 +49,7 @@ std::vector<int> *SuffixTree::getEntryIndexes(std::string substring) {
         }
     }
 
+    std::sort(entries->begin(), entries->end());
     return entries;
 }
 

@@ -16,7 +16,6 @@ void getEntryIndexesTest();
 
 int main() {
     printTestStarted("suffix forest");
-    printTODO("Implement tests");
     getEntryIndexesTest();
     printLastTestFinished();
     return 0;
