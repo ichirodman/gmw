@@ -1,4 +1,5 @@
 CC = g++ -std=gnu++0x -std=c++17
+PYTHON_INTERPRETER = python3
 
 MAIN_ALGO_FILE = $(SOURCE_DIR)/main.cpp
 MAIN_BIN_FILE = main_algo.exe
@@ -6,6 +7,7 @@ TEST_DIR_EXE_FILES := $(shell find ./$(TEST_FIR)/* -name "*.exe")
 
 SOURCE_DIR = source
 TEST_DIR = tests
+INFOGRAPHIC_DIR = infographic
 
 SUFFIX_FOREST_TESTS_DIR := $(TEST_DIR)/suffix_forest
 SLICE_MATCHER_TESTS_DIR := $(TEST_DIR)/slice_matcher
@@ -31,6 +33,9 @@ slice_matcher_tests: $(SLICE_MATCHER_TESTS)
 
 main_algo : $(MAIN_BIN_FILE)
 	@./$^ && echo "Finished $@\n";
+
+slice_matches_plot:
+	@$(PYTHON_INTERPRETER) $(INFOGRAPHIC_DIR)/slice_matches_plotting.py
 
 $(SUFFIX_FOREST_TESTS_DIR)/%.exe : $(SUFFIX_FOREST_TESTS_DIR)/%.cpp $(ALL_SOURCE_CPP_FILES)
 	@$(CC) $^ -o $@
