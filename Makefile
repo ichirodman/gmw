@@ -1,13 +1,13 @@
 CC = g++ -std=gnu++0x -std=c++17
 PYTHON_INTERPRETER = python3
 
-MAIN_ALGO_FILE = $(SOURCE_DIR)/main.cpp
-MAIN_BIN_FILE = main_algo.exe
-TEST_DIR_EXE_FILES := $(shell find ./$(TEST_FIR)/* -name "*.exe")
-
 SOURCE_DIR = source
 TEST_DIR = tests
 INFOGRAPHIC_DIR = infographic
+
+MAIN_ALGO_FILE = $(SOURCE_DIR)/main.cpp
+MAIN_BIN_FILE = main_algo.exe
+TEST_DIR_EXE_FILES := $(shell find ./$(TEST_DIR)/* -name "*.exe")
 
 SUFFIX_FOREST_TESTS_DIR := $(TEST_DIR)/suffix_forest
 SLICE_MATCHER_TESTS_DIR := $(TEST_DIR)/slice_matcher
@@ -47,4 +47,4 @@ $(MAIN_BIN_FILE) : $(MAIN_ALGO_FILE) $(ALL_SOURCE_CPP_FILES) $(ALL_SOURCE_HPP_FI
 	@$(CC) $^ -o $@
 
 clean:
-	@$(addsuffix ;, $(addprefix rm, $(TEST_DIR_EXE_FILES) $(MAIN_BIN_FILE)))
+	@rm  $(MAIN_BIN_FILE);  $(addprefix rm , $(addsuffix ;, $(TEST_DIR_EXE_FILES)))
