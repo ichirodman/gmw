@@ -10,16 +10,15 @@
 #include "../../suffix_forest/suffix_forest.hpp"
 #include "../../utils/fasta.hpp"
 
-#define THRESHOLD_MATCH_LENGTH 200
-
 
 class GlobalApproximateSliceMatcher {
 public:
-    GlobalApproximateSliceMatcher(FastaSequence *, FastaSequence *);
+    GlobalApproximateSliceMatcher(FastaSequence *, FastaSequence *, int = 50);
 
     ~GlobalApproximateSliceMatcher();
 
-    std::pair<std::vector<int> *, std::vector<int> *> getQueryAndTargetSubstringEntries(const std::string &);
+    std::pair<std::vector<int> *, std::vector<int> *>
+    getQueryAndTargetSubstringEntries(const std::string &);
 
     const std::string &getQuerySequenceDescription();
 
@@ -28,13 +27,15 @@ public:
     const std::string getSliceEntriesStringRepr();
 
 private:
-    void writeSlicesEntries();
+    void findSlicesEntries();
 
     SuffixForest *querySequenceSuffixForest;
 
     FastaSequence *targetSequence;
 
-    std::map<const std::string, std::pair<std::vector<int> *, std::vector<int> *>> * slicesEntries;
+    std::map<const std::string, std::pair<std::vector<int> *, std::vector<int> *>> *slicesEntries;
+
+    int thresholdMathLength;
 };
 
 #endif //GMW_GLOBAL_APPROXIMATE_SLICE_MATCHER_HPP

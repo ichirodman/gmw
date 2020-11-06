@@ -19,6 +19,7 @@ void writeToOutputFile(const std::string &, const std::string &);
 const std::string generateFileContent(GlobalApproximateSliceMatcher *);
 
 void ApproximateSliceMatchesFileFormat::write(GlobalApproximateSliceMatcher *sliceMatcher) {
+    std::cout << "-- Writing slice matches to file : " << this->filename << " --" << std::endl;
     const std::string fileContent = generateFileContent(sliceMatcher);
     writeToOutputFile(this->filename, fileContent);
 }

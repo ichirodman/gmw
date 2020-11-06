@@ -55,7 +55,11 @@ def make_plot(slice_matches_file_path):
 
             for query_pos in query_positions:
                 for target_pos in target_positions:
-                    plot.line(query_pos, target_pos, query_pos + block_size, target_pos + block_size, color="#000")
+                    plot.line(abs(query_pos) + (block_size if target_pos < 0 else 0),
+                              abs(target_pos) + (block_size if target_pos < 0 else 0),
+                              abs(query_pos) + (block_size if target_pos >= 0 else 0),
+                              abs(target_pos) + (block_size if target_pos >= 0 else 0),
+                              color="#000")
 
     plot.show()
     del plot

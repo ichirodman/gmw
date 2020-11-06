@@ -39,7 +39,6 @@ void SuffixForest::build() {
         this->suffixTrees->push_back(suffixTree);
         std::cout << "Built suffix tree num. " << i << ", left to build: " << (suffixTreesAmount - i) << std::endl;
     }
-    std::cout << "-- Suffix forest built successfully --" << std::endl;
 }
 
 void supplement(std::vector<int> *, std::vector<int> *);

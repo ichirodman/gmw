@@ -32,7 +32,7 @@ slice_matcher_tests: $(SLICE_MATCHER_TESTS)
 	@$(addsuffix $() &&, $(addprefix ./, $(SLICE_MATCHER_TESTS))) echo "Finished $@\n";
 
 main_algo : $(MAIN_BIN_FILE)
-	@./$^ && echo "Finished $@\n";
+	@./$^ && echo "Finished $@\n" && $(PYTHON_INTERPRETER) $(INFOGRAPHIC_DIR)/slice_matches_plotting.py;
 
 slice_matches_plot:
 	@$(PYTHON_INTERPRETER) $(INFOGRAPHIC_DIR)/slice_matches_plotting.py
@@ -47,4 +47,4 @@ $(MAIN_BIN_FILE) : $(MAIN_ALGO_FILE) $(ALL_SOURCE_CPP_FILES) $(ALL_SOURCE_HPP_FI
 	@$(CC) $^ -o $@
 
 clean:
-	@rm $(TEST_DIR_EXE_FILES) $(MAIN_BIN_FILE)
+	@$(addsuffix ;, $(addprefix rm, $(TEST_DIR_EXE_FILES) $(MAIN_BIN_FILE)))
