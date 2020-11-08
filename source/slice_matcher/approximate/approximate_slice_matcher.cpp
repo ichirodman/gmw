@@ -29,28 +29,53 @@ GlobalApproximateSliceMatcher::~GlobalApproximateSliceMatcher() {
     delete slicesEntries;
 }
 
+const std::string getReversed(const std::string);
+
+const std::string getComplimentary(const std::string &);
+
+std::vector<std::string> getAllSubsequenceVariants(const std::string &);
+
+const std::string getLexicographicallyMinSubsequenceVariant(const std::string &);
+
 std::pair<std::vector<int> *, std::vector<int> *>
 GlobalApproximateSliceMatcher::getQueryAndTargetSubstringEntries(const std::string &keySubsequence) {
-    return this->slicesEntries->at(keySubsequence);
+    return slicesEntries->at(getLexicographicallyMinSubsequenceVariant(keySubsequence));
 }
 
 bool haveKey(std::map<const std::string, std::pair<std::vector<int> *, std::vector<int> *>> *,
              const std::string &);
 
-const std::string getComplimentary(const std::string &);
-
 void GlobalApproximateSliceMatcher::findSlicesEntries() {
     std::cout << "-- Finding sequences slices entries --" << std::endl;
 
-    std::function<void(const std::string &, int)>
-            handleNewSuffix = [this](const std::string &targetSequenceSlice, int entryIndex) {
-        if (haveKey(slicesEntries, targetSequenceSlice)) {
-            slicesEntries->at(targetSequenceSlice).first->push_back(entryIndex);
-        } else {
-            auto queryTargetSliceEntries = querySequenceSuffixForest->getEntryIndexes(targetSequenceSlice);
+    std::function<void(const std::string &, int, bool, bool)> addEntryIndexesIfHas = [this](
+            std::string targetSequenceSlice, int entryIndex, bool makeReversed, bool makeComplimentary) {
+        if (makeReversed) {
+            targetSequenceSlice = getReversed(targetSequenceSlice);
+        }
+        if (makeComplimentary) {
+            targetSequenceSlice = getComplimentary(targetSequenceSlice);
+        }
+        auto queryTargetSliceEntries = querySequenceSuffixForest->getEntryIndexes(targetSequenceSlice);
+        if (!queryTargetSliceEntries->empty()) {
+            std::string keySlice = getLexicographicallyMinSubsequenceVariant(targetSequenceSlice);
             slicesEntries->insert(
-                    {targetSequenceSlice, std::pair<std::vector<int> *, std::vector<int> *>(
+                    {keySlice, std::pair<std::vector<int> *, std::vector<int> *>(
                             {new std::vector<int>({entryIndex}), queryTargetSliceEntries})});
+        }
+    };
+
+    std::function<void(const std::string &, int)>
+            handleNewSuffix = [this, &addEntryIndexesIfHas](const std::string &targetSequenceSlice, int entryIndex) {
+        const std::string keySlice = getLexicographicallyMinSubsequenceVariant(targetSequenceSlice);
+        if (haveKey(slicesEntries, keySlice)) {
+            slicesEntries->at(keySlice).first->push_back(entryIndex);
+        } else {
+            for (auto reversed : {false, true}) {
+                for (auto complimentary : {false, true}) {
+                    addEntryIndexesIfHas(keySlice, entryIndex * (reversed ? -1 : 1), reversed, complimentary);
+                }
+            }
         }
     };
 
@@ -61,18 +86,9 @@ void GlobalApproximateSliceMatcher::findSlicesEntries() {
                 std::cout << percentage << " done" << std::endl;
             }
         }
-
         int sliceQueryEntryIndex = i * thresholdMathLength;
-        std::string targetSequenceSlice = targetSequence->source->substr(sliceQueryEntryIndex, thresholdMathLength),
-                reversedTargetSequenceSlice = targetSequenceSlice;
-        std::reverse(reversedTargetSequenceSlice.begin(), reversedTargetSequenceSlice.end());
-        std::string targetSequenceComplimentarySlice = getComplimentary(targetSequenceSlice),
-                reversedTargetSequenceComplimentarySlice = getComplimentary(reversedTargetSequenceSlice);
-
+        std::string targetSequenceSlice = targetSequence->source->substr(sliceQueryEntryIndex, thresholdMathLength);
         handleNewSuffix(targetSequenceSlice, sliceQueryEntryIndex);
-        handleNewSuffix(targetSequenceComplimentarySlice, sliceQueryEntryIndex);
-        handleNewSuffix(reversedTargetSequenceSlice, -sliceQueryEntryIndex);
-        handleNewSuffix(reversedTargetSequenceComplimentarySlice, -sliceQueryEntryIndex);
     }
 }
 
@@ -91,12 +107,28 @@ bool haveKey(std::map<const std::string, std::pair<std::vector<int> *, std::vect
 
 char getComplimentaryNucleotide(char);
 
+const std::string getReversed(std::string string) {
+    std::reverse(string.begin(), string.end());
+    return string;
+}
+
 const std::string getComplimentary(const std::string &string) {
     std::string complimentary = "";
     for (int i = 0; i < string.length(); ++i) {
         complimentary += getComplimentaryNucleotide(string.at(i));
     }
     return complimentary;
+}
+
+std::vector<std::string> getAllSubsequenceVariants(const std::string &subsequence) {
+    return std::vector<std::string>{subsequence, getReversed(subsequence), getComplimentary(subsequence),
+                                    getReversed(getComplimentary(subsequence))};
+}
+
+const std::string getLexicographicallyMinSubsequenceVariant(const std::string &subsequence) {
+    std::vector<std::string> allVariants = getAllSubsequenceVariants(subsequence);
+    std::sort(allVariants.begin(), allVariants.end());
+    return allVariants.at(0);
 }
 
 char getComplimentaryNucleotide(char nucleotide) {
