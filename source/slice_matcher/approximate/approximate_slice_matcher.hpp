@@ -36,6 +36,8 @@ private:
     std::map<const std::string, std::pair<std::vector<int> *, std::vector<int> *>> *slicesEntries;
 
     int thresholdMathLength;
+
+    friend class ApproximateSliceMatchesFileFormat;
 };
 
 #endif //GMW_GLOBAL_APPROXIMATE_SLICE_MATCHER_HPP

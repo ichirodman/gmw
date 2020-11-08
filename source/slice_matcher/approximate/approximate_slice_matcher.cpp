@@ -54,7 +54,14 @@ void GlobalApproximateSliceMatcher::findSlicesEntries() {
         }
     };
 
-    for (int i = 0; i < targetSequence->source->length() / thresholdMathLength; i++) {
+    for (int i = 0, percentage = 0, max_i = targetSequence->source->length() / thresholdMathLength; i < max_i; i++) {
+        if (percentage - 1 < (100 * i) / max_i) {
+            percentage++;
+            if (percentage % 5 == 0) {
+                std::cout << percentage << " done" << std::endl;
+            }
+        }
+
         int sliceQueryEntryIndex = i * thresholdMathLength;
         std::string targetSequenceSlice = targetSequence->source->substr(sliceQueryEntryIndex, thresholdMathLength),
                 reversedTargetSequenceSlice = targetSequenceSlice;
@@ -75,19 +82,6 @@ const std::string &GlobalApproximateSliceMatcher::getQuerySequenceDescription() 
 
 const std::string &GlobalApproximateSliceMatcher::getTargetSequenceDescription() {
     return *(this->targetSequence->description);
-}
-
-const std::string getCurrentSliceStringRepr(const std::string slice,
-                                            std::pair<std::vector<int> *, std::vector<int> *> currentSliceEntries);
-
-const std::string GlobalApproximateSliceMatcher::getSliceEntriesStringRepr() {
-    std::string repr = "";
-    for (auto it = this->slicesEntries->begin(); it != slicesEntries->end(); it++) {
-        if (it->second.second->size() != 0) {
-            repr += getCurrentSliceStringRepr(it->first, it->second) + "\n";
-        }
-    }
-    return repr;
 }
 
 bool haveKey(std::map<const std::string, std::pair<std::vector<int> *, std::vector<int> *>> *m,
@@ -124,22 +118,3 @@ char getComplimentaryNucleotide(char nucleotide) {
     }
 }
 
-const std::string join(const std::string, std::vector<int> *);
-
-const std::string getCurrentSliceStringRepr(const std::string slice,
-                                            std::pair<std::vector<int> *, std::vector<int> *> currentSliceEntries) {
-    return slice + " : " +
-           join(",", currentSliceEntries.first) + " ; " +
-           join(",", currentSliceEntries.second);
-}
-
-const std::string join(const std::string joinTo, std::vector<int> *v) {
-    std::string repr = "";
-    for (int i = 0; i < v->size(); ++i) {
-        repr += std::to_string(v->at(i));
-        if (i < v->size() - 1) {
-            repr += joinTo;
-        }
-    }
-    return repr;
-}

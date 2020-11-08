@@ -14,33 +14,64 @@ ApproximateSliceMatchesFileFormat::ApproximateSliceMatchesFileFormat(const std::
 
 ApproximateSliceMatchesFileFormat::~ApproximateSliceMatchesFileFormat() {}
 
-void writeToOutputFile(const std::string &, const std::string &);
+void writeToOutputFile(const std::string &, const std::string &,
+                       std::map<const std::string, std::pair<std::vector<int> *, std::vector<int> *>> *);
 
-const std::string generateFileContent(GlobalApproximateSliceMatcher *);
+const std::string generateFileHeaders(GlobalApproximateSliceMatcher *);
 
 void ApproximateSliceMatchesFileFormat::write(GlobalApproximateSliceMatcher *sliceMatcher) {
     std::cout << "-- Writing slice matches to file : " << this->filename << " --" << std::endl;
-    const std::string fileContent = generateFileContent(sliceMatcher);
-    writeToOutputFile(this->filename, fileContent);
+    const std::string fileHeaders = generateFileHeaders(sliceMatcher);
+    writeToOutputFile(this->filename, fileHeaders, sliceMatcher->slicesEntries);
 }
 
 GlobalApproximateSliceMatcher *ApproximateSliceMatchesFileFormat::extract() {
     return nullptr; // TODO
 }
 
-const std::string generateFileContent(GlobalApproximateSliceMatcher *sliceMatcher) {
+const std::string generateFileHeaders(GlobalApproximateSliceMatcher *sliceMatcher) {
     return "> Q : " + sliceMatcher->getQuerySequenceDescription() + "\n" +
-           "> T : " + sliceMatcher->getTargetSequenceDescription() + "\n" +
-           sliceMatcher->getSliceEntriesStringRepr();
+           "> T : " + sliceMatcher->getTargetSequenceDescription() + "\n";
 }
 
 const std::string getPath(const std::string &);
 
-void writeToOutputFile(const std::string &filename, const std::string &content) {
+const std::string getCurrentSliceStringRepr(const std::string slice, std::pair<std::vector<int> *,
+        std::vector<int> *> currentSliceEntries);
+
+void writeToOutputFile(const std::string &filename, const std::string &headers,
+                       std::map<const std::string, std::pair<std::vector<int> *, std::vector<int> *>> *slicesEntries) {
     std::string filePath = getPath(filename);
     std::ofstream outputFile(filePath);
-    outputFile << content << std::endl;
+    outputFile << headers;
+    for (auto it = slicesEntries->begin(); it != slicesEntries->end(); it++) {
+        if (it->second.second->size() != 0) {
+            outputFile << getCurrentSliceStringRepr(it->first, it->second) << "\n";
+        }
+    }
     outputFile.close();
 }
 
-const std::string getPath(const std::string &filename) { return FILES_OUTPUT_DIR + filename; }
+const std::string join(const std::string, std::vector<int> *);
+
+const std::string getCurrentSliceStringRepr(const std::string slice, std::pair<std::vector<int> *,
+        std::vector<int> *> currentSliceEntries) {
+    return slice + " : " +
+           join(",", currentSliceEntries.first) + " ; " +
+           join(",", currentSliceEntries.second);
+}
+
+const std::string getPath(const std::string &filename) {
+    return FILES_OUTPUT_DIR + filename;
+}
+
+const std::string join(const std::string joinTo, std::vector<int> *v) {
+    std::string repr = "";
+    for (int i = 0; i < v->size(); ++i) {
+        repr += std::to_string(v->at(i));
+        if (i < v->size() - 1) {
+            repr += joinTo;
+        }
+    }
+    return repr;
+}
