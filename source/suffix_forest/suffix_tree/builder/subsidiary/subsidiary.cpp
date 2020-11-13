@@ -1,4 +1,4 @@
-#include "subsidary.hpp"
+#include "subsidiary.hpp"
 // TODO
 // Delete this directive
 #include <iostream>

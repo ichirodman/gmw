@@ -1,7 +1,7 @@
 #include "../cache/cache_file_format.hpp"
 #include "suffix_tree_builder.hpp"
 #include "vertex/suffix_tree_vertex.hpp"
-#include "subsidary/subsidary.hpp"
+#include "subsidiary/subsidiary.hpp"
 #include <string>
 #include <iostream>
 

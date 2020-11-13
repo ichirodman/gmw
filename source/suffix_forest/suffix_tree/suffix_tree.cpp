@@ -1,5 +1,5 @@
 #include "suffix_tree.hpp"
-#include "builder/subsidary/subsidary.hpp"
+#include "builder/subsidiary/subsidiary.hpp"
 
 #include <string>
 #include <functional>
