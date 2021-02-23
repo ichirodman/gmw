@@ -1,11 +1,58 @@
-# GMW or Genetic Magic Wands
+# GMW or Genetic Magic Wand ![](https://img.icons8.com/ios/40/000000/fantasy.png)
 
->This repo's purpose is to store samples of solutions to genetic tasks which were given to us from BIOCAD while the science summer practice.
+##### The GMW is a simplified solution for making align of pair of bacterias' genomes.
+
+## Setup
+
+Before using the tool, you need to setup the system by downloading some libs for python. Use the prepared script:
+
+<pre><code>sh setup.sh</code></pre>
+
+## Using data
+
+The tool works **only** with **fasta** files. You can find genomes' samples in the ncbi database:
+
+[ncbi web-site](https://www.ncbi.nlm.nih.gov/) (https://www.ncbi.nlm.nih.gov/)
+
+## Makefile
+
+In the makefile you can find a few commands to interact with the tool.
+
+To run align module for representation:
+
+<pre><code>make main_algo</code></pre>
+
+To run all of the tests:
+
+<pre><code>make all_tests</code></pre>
+
+To make a plot based on tool's output:
+
+<pre><code>make slice_matches_plot</code></pre>
+
+Finally, to clean the project:
+
+<pre><code>make clean</code></pre>
+
+All of said you can easily find in the Makefile.
+
+## Sample
+
+The main class you may be needed in is **ApproximateAligner** which is placed in **src/approximate_aligner/approximate_aligner.hpp**. So there is a sample of using this tool, which is exactly the content of **tests/align_module_test.cpp* file and it runs by a Makefile what was said in the previous paragraph. The sample:
+ 
+<pre><code>
+#include "../src/approximate_aligner/approximate_aligner.hpp"
 
 
-### Probably useful:
-* [Web-site](https://www.ncbi.nlm.nih.gov/) with cut off genomes ([https://www.ncbi.nlm.nih.gov/](https://www.ncbi.nlm.nih.gov/))
-* [BLAST](https://en.wikipedia.org/wiki/BLAST_(biotechnology)) partly algo explanation (https://en.wikipedia.org/wiki/BLAST_(biotechnology))
-* [DUST algo](https://kodomo.fbb.msu.ru/FBB/year_10/ppt/DUST.pdf) (https://kodomo.fbb.msu.ru/FBB/year_10/ppt/DUST.pdf) 
-* [E-value pt.1](https://www.youtube.com/watch?v=jA_ROVJTQF8&t=275s) (https://www.youtube.com/watch?v=jA_ROVJTQF8&t=275s) 
-	& [E-value pt.2](https://www.youtube.com/watch?v=i-IDrTrPMFg) (https://www.youtube.com/watch?v=i-IDrTrPMFg)
+int main() {
+    std::string firstFilename = "large1/large_genome2.fasta", secondFilename = "large1/large_genome1.fasta";
+    ApproximateAligner *aligner = new ApproximateAligner(firstFilename, secondFilename, 100);
+    aligner->align();
+
+    delete aligner;
+
+    return 0;
+}
+</code></pre>
+## P.S.
+The repository updated regularly, so keep for updates.
