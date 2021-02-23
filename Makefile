@@ -1,16 +1,16 @@
 CC = g++ -std=gnu++0x -std=c++17
 PYTHON_INTERPRETER = python3
 
-SOURCE_DIR = source
+SOURCE_DIR = src
 TEST_DIR = tests
-INFOGRAPHIC_DIR = infographic
 
-MAIN_ALGO_FILE = $(SOURCE_DIR)/main.cpp
-MAIN_BIN_FILE = main_algo.exe
+MAIN_ALGO_FILE = $(TEST_DIR)/align_module_test.cpp
+MAIN_BIN_FILE = align_module_test.exe
 TEST_DIR_EXE_FILES := $(shell find ./$(TEST_DIR)/* -name "*.exe")
 
 SUFFIX_FOREST_TESTS_DIR := $(TEST_DIR)/suffix_forest
 SLICE_MATCHER_TESTS_DIR := $(TEST_DIR)/slice_matcher
+INFOGRAPHIC_DIR = $(SOURCE_DIR)/infographic
 
 ALL_SOURCE_CPP_FILES := $(shell find ./$(SOURCE_DIR)/*/* -name "*.cpp")
 ALL_SOURCE_HPP_FILES := $(shell find ./$(SOURCE_DIR) -name "*.hpp")

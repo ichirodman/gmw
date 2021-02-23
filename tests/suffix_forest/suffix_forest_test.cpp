@@ -8,7 +8,7 @@
 #include <algorithm>
 
 #include "../tests_maintenance.hpp"
-#include "../../source/suffix_forest/suffix_forest.hpp"
+#include "../../src/suffix_forest/suffix_forest.hpp"
 
 #define SUFFIX_FOREST_TEST_DIR "./tests/suffix_forest/"
 
